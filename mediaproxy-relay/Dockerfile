@@ -21,6 +21,6 @@ RUN apt-get purge -y ca-certificates libidn11 openssl wget
 COPY entrypoint.sh /sbin
 RUN chown root.root /sbin/entrypoint.sh && chmod 700 /sbin/entrypoint.sh
 
-EXPOSE 20000-60000/tcp
+EXPOSE 20000-60000/udp
 
 ENTRYPOINT ["entrypoint.sh"]
