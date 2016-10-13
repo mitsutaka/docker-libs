@@ -33,8 +33,8 @@ sed \
     -e "s/^;info_column = info/info_column = info/g" \
     -i /etc/mediaproxy/config.ini
 
-mysql -uroot -p$DB_ROOT_PASS -h$DB_HOST < /etc/mediaproxy/script/statistic.sql
-mysql -uroot -p$DB_ROOT_PASS -h$DB_HOST \
-    -e "GRANT ALL PRIVILEGES ON $DB.* TO '$DB_USER' IDENTIFIED BY '$DB_PASS';"
+#mysql -uroot -p$DB_ROOT_PASS -h$DB_HOST < /etc/mediaproxy/script/statistic.sql
+#mysql -uroot -p$DB_ROOT_PASS -h$DB_HOST \
+#    -e "GRANT ALL PRIVILEGES ON $DB.* TO '$DB_USER' IDENTIFIED BY '$DB_PASS';"
 
 /usr/bin/media-dispatcher --no-fork
