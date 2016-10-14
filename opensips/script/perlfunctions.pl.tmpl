@@ -1,0 +1,276 @@
+#!/usr/bin/perl
+use OpenSIPS qw ( log );
+use OpenSIPS::Constants;
+
+use HTTP::Request;
+use HTTP::Async;
+use LWP::UserAgent;
+use URI::Escape;
+
+use JSON;
+
+use DBI;
+
+use threads;
+
+sub send_post {
+	my $server_endpoint = shift(@_);
+	#my $post_data = shift(@_);
+	my %postObject = %{shift(@_)};
+	my $post_data = encode_json \%postObject;
+	#log(L_INFO, $post_data);
+	
+	#log(L_INFO,"In the thread");
+	my $req = HTTP::Request->new(POST => $server_endpoint);
+	$req->header('content-type' => 'application/json');
+	$req->content($post_data);
+	my $ua = LWP::UserAgent->new;
+	$ua->timeout(5);
+
+	my $dbh = DBI->connect('dbi:mysql:statistic:DB_HOST','statistic','statistic');
+	my $stop = 0;
+	my $tries = 0;
+	my $succ = 0;
+	while ($tries < 10 && $stop == 0) {
+		my $resp = $ua->request($req);
+		if ($resp->is_success) {
+			$succ = 1;
+			$stop = 1;
+		} else {
+			$succ = 0;
+		}
+		
+		my $callId = $postObject{'callId'};
+		my $startTime = $postObject{'startTime'};
+		if (defined $startTime) { #phase 1: send start
+			my $calleeId = $postObject{'teacherSipId'};
+			my $callerId = $postObject{'studentSipId'};
+			my $callerIp = $postObject{'callerIp'};
+			my $calleeIp = $postObject{'calleeIp'};
+			$sql1 = "insert into call_log_edoopad(call_id,call_start_time,caller_id,caller_ip,callee_id,callee_ip,send_start_tries,send_start_success) values ('$callId',$startTime,'$callerId','$callerIp','$calleeId','$calleeIp',$tries,$succ)";
+			$sql1 = $sql1 . " on duplicate key update send_start_tries = $tries, send_start_success = $succ";
+			
+			my $send_log_id = $callId . "_0_" . sprintf("%02d", $tries);
+			my $send_time = time();
+			$sql2 = "insert into send_log_edoopad(id,phase,call_id,send_time,endpoint,data) values('$send_log_id',0,'$callId',$send_time,'$server_endpoint','$post_data')";
+		} else { #phase 2: send finish
+			my $endTime = $postObject{'endTime'};
+			$sql1 = "insert into call_log_edoopad(call_id,call_end_time,send_end_tries,send_end_success) values('$callId',$endTime,$tries,1) on duplicate key update call_end_time = $endTime, send_end_tries = $tries, send_end_success = $succ";
+			
+			my $send_log_id = $callId . "_1_" . sprintf("%02d", $tries);;
+			my $send_time = time();
+			$sql2 = "insert into send_log_edoopad(id,phase,call_id,send_time,endpoint,data) values('$send_log_id',1,'$callId',$send_time,'$server_endpoint','$post_data')";
+		}
+		
+		log(L_INFO,$sql1);
+		log(L_INFO,$sql2);
+		my $sth1 = $dbh->prepare($sql1);
+		$sth1->execute;
+		my $sth2 = $dbh->prepare($sql2);
+		$sth2->execute;
+		
+		if ($succ == 0) {
+			sleep(5);
+		}
+		$tries = $tries + 1;
+	}
+	
+	$dbh->disconnect;
+}
+
+sub send_offline_threading {
+        my $m = shift;
+        my $type = shift;
+
+        my $callID = 'callId=' . $m->getHeader("Call-ID");
+
+        my $callerID = $m->getHeader("From");
+        my $pos = index($callerID, ':')+1;
+        my $len = index($callerID, '@') - $pos;
+        my $senderID = 'from=' . substr($callerID,$pos,$len);
+
+        my $calleeID = $m->getHeader("To");
+        my $pos = index($calleeID, ':')+1;
+        my $len = index($calleeID, '@') - $pos;
+        my $receiverID = 'to=' . substr($calleeID,$pos,$len);
+
+        $post_data = $senderID . "&";
+        $post_data .= $receiverID . "&";
+        $post_data .= $callID . "&";
+        if ($type =~ "offline") {
+            $post_data .= "type=1" . "&";
+        } elsif ($type =~ "missed") {
+            $post_data .= "type=2" . "&";
+        }
+        $post_data .= "k=be0dc759b501b2fde1d07ca53fa66858";
+
+        log(L_INFO, $post_data);
+
+        my $async = HTTP::Async->new;
+        my $server_endpoint = "https://api.tutorica.jp/api/v1/internal/pushapi?" . $post_data;
+        my $req = HTTP::Request->new(GET => $server_endpoint);
+
+        $async->add($req);
+        $async->remove_all;
+
+        return 1;
+}
+
+sub call_start_send_threading {
+	my $m = shift;
+
+	my $callID = $m->getHeader("Call-ID");
+
+	my $callerID = $m->getHeader("From");
+	my $pos = index($callerID, ':')+1;
+	my $len = index($callerID, '@') - $pos;
+	my $senderID = substr($callerID,$pos,$len);
+
+	my $calleeID = $m->getHeader("To");
+	my $pos = index($calleeID, ':')+1;
+	my $len = index($calleeID, '@') - $pos;
+	my $receiverID = substr($calleeID,$pos,$len);
+
+	my %postObject = ("callId" => $callID);
+	$postObject{'startTime'} = time() . "";
+	$postObject{'teacherSipId'} = $receiverID;
+	$postObject{'studentSipId'} = $senderID;
+	$postObject{'callerIp'} = OpenSIPS::AVP::get("caller_ip");
+	$postObject{'calleeIp'} = OpenSIPS::AVP::get("callee_ip");
+	$postObject{'key'} = "b69c6f400d3d5fbffe0c10bcf208f719";
+	my $post_data = encode_json \%postObject;
+
+	my $server_endpoint = "https://api.tutorica.jp/api/v1/transactions/serverstart";
+	#my $server_endpoint = "http://104.131.90.245:5000/api/v1/transactions/serverstart";
+
+	#log(L_INFO, $post_data);
+
+	if (0) {
+		my $req = HTTP::Request->new(POST => $server_endpoint);
+		$req->header('content-type' => 'application/json');
+		$req->content($post_data);
+		my $ua = LWP::UserAgent->new;
+		$ua->timeout(2);
+		my $resp = $ua->request($req);
+		if ($resp->is_success) {
+			my $message = $resp->decoded_content;
+			log(L_INFO,"Received reply: $message");
+		} else {
+			log(L_INFO,"HTTP POST error");
+		}
+	}
+
+	if (0) {
+		send_post($server_endpoint,$post_data)
+	}	
+
+	if (1) {
+		threads->create(\&send_post, $server_endpoint, \%postObject)->detach;	
+	}
+
+	return 1;
+}
+
+sub call_finish_send_threading {
+	my $m = shift;
+
+	my $callID = $m->getHeader("Call-ID");
+
+	my %postObject = ("callId" => $callID);
+	$postObject{'endTime'} = time() . "";
+	$postObject{'key'} = "b69c6f400d3d5fbffe0c10bcf208f719";
+	my $post_data = encode_json \%postObject;
+
+	#log(L_INFO, $post_data);
+
+	my $server_endpoint = "https://api.tutorica.jp/api/v1/transactions/serverend";
+	#my $server_endpoint = "http://104.131.90.245:5000/api/v1/transactions/serverend";
+	
+	if (0) {
+		my $req = HTTP::Request->new(POST => $server_endpoint);
+		$req->header('content-type' => 'application/json');
+		$req->content($post_data);
+		my $ua = LWP::UserAgent->new;
+		$ua->timeout(2);
+		my $resp = $ua->request($req);
+		if ($resp->is_success) {
+			my $message = $resp->decoded_content;
+			log(L_INFO,"Received reply: $message");
+		} else {
+			log(L_INFO,"HTTP POST error");
+		}
+	}
+
+	if (0) {
+		send_post($server_endpoint,$post_data)
+	}	
+
+	if (1) {
+		threads->create(\&send_post, $server_endpoint, \%postObject)->detach;
+	}
+
+	return 1;
+}
+
+sub refreshUsrLoc {
+        my $m = shift;
+        my $to_username = $m->pseudoVar("\$tU");
+        my $to_field = $m->pseudoVar("\$tU") . '@' . $m->pseudoVar("\$td");
+
+        #get the stupid list from user location first
+        my $command = "opensipsctl ul show " . $to_field;
+        my $result = `$command`;
+        if ($result =~ /not found/) {
+            return 1;
+        }
+        my @ip_set = ();
+        while ($result =~ /@(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5});/g) {
+            push(@ip_set,$1);
+        }
+        log(L_INFO,"$command");
+        log(L_INFO,"$result");
+
+        #then collect the associated ip address from living sockets
+        my $grep_string = join('\|', @ip_set);
+        #$command = "opensipsctl fifo list_tcp_conns | grep \"$grep_string\"";
+        $command = "netstat -an | grep \"SIP_IPADDR:80\\|SIP_IPADDR:443\" | grep \"ESTABLISHED\" | awk \'\{ print \$5\}\' | grep \"$grep_string\"";
+        $result = `$command`;
+        log(L_INFO,"$command");
+        log(L_INFO,"$result");
+        if ($result eq "") {
+            $command = "opensipsctl ul rm $to_field";
+            $result = `$command`;
+            return 1;
+        }
+
+        my @real_ip_set = ();
+        while ($result =~ /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/g) {
+            push(@real_ip_set,$1);
+        }
+
+        #find the differences
+        my %ip_set=map{$_ =>1} @ip_set;
+        my %real_ip_set=map{$_=>1} @real_ip_set;
+        my @invalid_ip_set=grep(!defined $real_ip_set{$_}, @ip_set);
+
+        foreach (@invalid_ip_set) {
+            # try with tls first
+            my $record_to_kill = "$to_field \"sip\:$to_username\@$_;transport=tls\"";
+            $command = "sbin/opensipsctl ul rm $record_to_kill";
+            $result = `$command`;
+            log(L_INFO,"$command");
+            log(L_INFO,"$result");
+            if ($result eq "") {
+                next;
+            }
+
+            # then with tcp
+            $record_to_kill = "$to_field \"sip\:$to_username\@$_;transport=tcp\"";
+            $command = "opensipsctl ul rm $record_to_kill";
+            $result = `$command`;
+            if ($result eq "") {
+                next;
+            }
+        }
+        return 1;
+}
