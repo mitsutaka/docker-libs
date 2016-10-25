@@ -1,0 +1,25 @@
+language: bash
+services: docker
+
+env:
+  - IMAGE=ejabberd
+  - IMAGE=fluentd
+  - IMAGE=jenkins
+  - IMAGE=mediaproxy-dispatcher
+  - IMAGE=mediaproxy-relay
+  - IMAGE=opensips
+
+install:
+  - git clone https://github.com/mitsutaka/docker-libs.git ~/docker-libs
+
+before_script:
+  - env | sort
+  - cd "$IMAGE"
+
+script:
+  - docker build -t mitsutaka/$IMAGE .
+
+after_script:
+  - docker images
+
+# vim:set et ts=2 sw=2:
