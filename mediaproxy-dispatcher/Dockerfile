@@ -14,9 +14,7 @@ RUN echo "deb http://ag-projects.com/ubuntu trusty main" >>/etc/apt/sources.list
     wget -O - http://download.ag-projects.com/agp-debian-gpg.key | apt-key add -
 
 RUN apt-get update && \
-    apt-get install -y mediaproxy-dispatcher mysql-client python-mysqldb
-
-RUN apt-get purge -y ca-certificates libidn11 openssl wget
+    apt-get install -y mediaproxy-dispatcher python-mysqldb
 
 RUN mkdir -p /etc/mediaproxy/script
 COPY script/statistic.sql /etc/mediaproxy/script
