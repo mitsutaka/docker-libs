@@ -8,6 +8,7 @@ env:
   - IMAGE=mediaproxy-dispatcher
   - IMAGE=mediaproxy-relay
   - IMAGE=opensips
+  - IMAGE=znc
 
 install:
   - git clone https://github.com/mitsutaka/docker-libs.git ~/docker-libs
