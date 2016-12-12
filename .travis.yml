@@ -9,6 +9,7 @@ env:
   - IMAGE=mediaproxy-relay
   - IMAGE=opensips
   - IMAGE=znc
+  - IMAGE=softether-vpnclient
 
 install:
   - git clone https://github.com/mitsutaka/docker-libs.git ~/docker-libs
