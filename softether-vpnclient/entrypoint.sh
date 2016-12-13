@@ -28,7 +28,7 @@ TAP_DEVICE=$(cd /sys/class/net; echo vpn_*)
 if [ "${TAP_IPADDR}" = "" ]; then
 	dhcpcd $TAP_DEVICE
 else
-	ip addr add $TAP_ADDR dev $TAP_DEVICE
+	ip addr add $TAP_IPADDR dev $TAP_DEVICE
 fi
 
 tail -F /usr/local/vpnclient/client_log/*.log &
