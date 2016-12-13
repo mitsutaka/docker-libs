@@ -4,7 +4,6 @@ VIRTUAL_HUB=${VIRTUAL_HUB:-"DEFAULT"}
 VPN_SERVER=${VPN_SERVER:-"localhost"}
 VPN_PORT=${VPN_PORT:-"5555"}
 TAP_IPADDR=${TAP_IPADDR:-""}
-TAP_DEVICE=vpn_$(echo $VIRTUAL_HUB | tr '[:upper:]' '[:lower:]')
 ACCOUNT_NAME=${ACCOUNT_NAME:-"DEFAULT"}
 ACCOUNT_USER=${ACCOUNT_USER:-"username"}
 ACCOUNT_PASS=${ACCOUNT_PASS:-"password"}
@@ -25,6 +24,7 @@ $VPNCMD AccountConnect $ACCOUNT_NAME
 
 sleep 3
 
+TAP_DEVICE=$(cd /sys/class/net; echo vpn_*)
 if [ "${TAP_IPADDR}" = "" ]; then
 	dhcpcd $TAP_DEVICE
 else
