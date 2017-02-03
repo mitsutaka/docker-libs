@@ -25,11 +25,15 @@ $VPNCMD AccountConnect $ACCOUNT_NAME
 sleep 3
 
 TAP_DEVICE=$(cd /sys/class/net; echo vpn_*)
-if [ "${TAP_IPADDR}" = "" ]; then
-	dhcpcd $TAP_DEVICE
-else
-	ip addr add $TAP_IPADDR dev $TAP_DEVICE
-fi
+case ${TAP_IPADDR} in
+	dhcp)
+		dhcpcd $TAP_DEVICE
+		;;
+	none)
+		;;
+	*)
+		ip addr add $TAP_IPADDR dev $TAP_DEVICE
+esac
 
 tail -F /usr/local/vpnclient/client_log/*.log &
 
