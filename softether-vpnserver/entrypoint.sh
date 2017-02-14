@@ -17,8 +17,10 @@ if [ ! -d "/var/log/vpnserver/server_log" ]; then
   mkdir -p /var/log/vpnserver/server_log
 fi
 
-ln -s /var/log/vpnserver/*_log /usr/local/vpnserver/
+/usr/local/vpnserver/vpnserver start
 
-exec /usr/local/vpnserver/vpnserver execsvc
+tail -F /usr/local/vpnserver/*_log/*.log &
 
-exit $?
+set +e
+while pgrep vpnserver > /dev/null; do sleep 1; done
+set -e
