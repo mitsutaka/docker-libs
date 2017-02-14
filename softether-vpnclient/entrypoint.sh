@@ -33,6 +33,7 @@ case ${TAP_IPADDR} in
 		;;
 	*)
 		ip addr add $TAP_IPADDR dev $TAP_DEVICE
+		;;
 esac
 
 tail -F /usr/local/vpnclient/client_log/*.log &
