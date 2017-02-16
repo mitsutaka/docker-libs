@@ -12,7 +12,7 @@ https://www.softether.org
 docker run -d --name=softether-vpnclient \
 --net=host --privileged \
 -e VPN_SERVER=<Softether VPN server> \
--e VPN_SERVER=<Softether VPN port> \
+-e VPN_PORT=<Softether VPN port> \
 -e ACCOUNT_USER=<Registered username> \
 -e ACCOUNT_PASS=<Registered password> \
 mitsutaka/softether-vpnclient
