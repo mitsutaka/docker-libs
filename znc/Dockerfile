@@ -3,7 +3,7 @@
 FROM ubuntu:16.04
 MAINTAINER Mitz Amano "mitz@linux.com"
 
-ENV ZNC_VERSION 1.6.3
+ENV ZNC_VERSION 1.6.4
 
 RUN apt-get update \
     && apt-get install -y sudo wget build-essential libssl-dev libperl-dev \
