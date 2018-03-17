@@ -1,9 +1,9 @@
 # version 1.6.3
 # docker-version 1.11.1
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER Mitz Amano "mitz@linux.com"
 
-ENV ZNC_VERSION 1.6.5
+ENV ZNC_VERSION 1.6.6
 
 RUN apt-get update \
     && apt-get install -y sudo wget build-essential libssl-dev libperl-dev \
