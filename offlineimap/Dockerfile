@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 MAINTAINER Mitz Amano "mitsutaka.amano@gmail.com"
 
-ENV OFFLINEIMAP_VERSION 7.1.5
+ENV OFFLINEIMAP_VERSION 7.2.0
 
 RUN apt-get update \
     && apt-get install -y sudo curl python git python-six make
