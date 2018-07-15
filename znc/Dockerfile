@@ -1,33 +1,20 @@
-# version 1.6.3
-# docker-version 1.11.1
 FROM ubuntu:18.04
-MAINTAINER Mitz Amano "mitz@linux.com"
-
-ENV ZNC_VERSION 1.6.6
+MAINTAINER Mitz Amano "mitsutaka.amano@gmail.com"
 
 RUN apt-get update \
-    && apt-get install -y sudo wget build-essential libssl-dev libperl-dev \
-               pkg-config swig3.0 libicu-dev ca-certificates \
-    && mkdir -p /src \
-    && cd /src \
-    && wget "http://znc.in/releases/archive/znc-${ZNC_VERSION}.tar.gz" \
-    && tar -zxf "znc-${ZNC_VERSION}.tar.gz" \
-    && cd "znc-${ZNC_VERSION}" \
-    && ./configure --disable-ipv6 \
-    && make \
-    && make install \
-    && apt-get remove -y wget \
+    && apt-get install -y --no-install-recommends znc \
     && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /src* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-get clean all \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN useradd znc
 ADD entrypoint.sh /entrypoint.sh
 ADD znc.conf.default /znc.conf.default
-RUN chmod 644 /znc.conf.default
+RUN groupadd -g 10000 znc && useradd -u 10000 -g znc znc
+RUN chmod 644 /znc.conf.default && chown 10000:10000 /znc.conf.default
+RUN mkdir -p /znc-data && chown 10000:10000 /znc-data
 
+USER 10000:10000
 VOLUME /znc-data
 
 EXPOSE 6666 6667
 ENTRYPOINT ["/entrypoint.sh"]
-CMD [""]

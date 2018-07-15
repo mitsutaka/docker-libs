@@ -1,25 +1,25 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 DATADIR="/znc-data"
 
 if [ -d "${DATADIR}/modules" ]; then
-  cwd="$(pwd)"
+    cwd="$(pwd)"
 
-  modules=$(find "${DATADIR}/modules" -name "*.cpp")
+    modules=$(find "${DATADIR}/modules" -name "*.cpp")
 
-  for module in $modules; do
-    echo "Building module $module..."
-    cd "$(dirname "$module")"
-    znc-buildmod "$module"
-  done
+    for module in $modules; do
+        echo "Building module $module..."
+        cd "$(dirname "$module")"
+        znc-buildmod "$module"
+    done
 
-  cd "$cwd"
+    cd "$cwd"
 fi
 
 if [ ! -f "${DATADIR}/configs/znc.conf" ]; then
-  echo "Creating a default configuration..."
-  mkdir -p "${DATADIR}/configs"
-  cp /znc.conf.default "${DATADIR}/configs/znc.conf"
+    echo "Creating a default configuration..."
+    mkdir -p "${DATADIR}/configs"
+    cp /znc.conf.default "${DATADIR}/configs/znc.conf"
 fi
 
-exec sudo -u znc znc --foreground --datadir="$DATADIR" $@
+exec znc --foreground --datadir="$DATADIR" $@
