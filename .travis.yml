@@ -10,6 +10,7 @@ env:
   - IMAGE=znc
   - IMAGE=softether-vpnclient
   - IMAGE=softether-vpnserver
+  - IMAGE=stone
 
 install:
   - git clone https://github.com/mitsutaka/docker-libs.git ~/docker-libs
