@@ -1,7 +1,7 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER Mitz Amano <mitz@linux.com>
 
-ENV VERSION v4.22-9634-beta-2016.11.27
+ENV VERSION v4.28-9669-beta-2018.09.11
 WORKDIR /usr/local/vpnserver
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
