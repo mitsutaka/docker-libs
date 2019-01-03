@@ -12,6 +12,7 @@ env:
   - IMAGE=softether-vpnserver
   - IMAGE=softether-vpnbridge
   - IMAGE=stone
+  - IMAGE=ipmi_exporter
 
 install:
   - git clone https://github.com/mitsutaka/docker-libs.git ~/docker-libs
