@@ -5,8 +5,8 @@ env:
   - IMAGE=ejabberd
   - IMAGE=fluentd
   - IMAGE=jenkins
-  - IMAGE=mediaproxy-dispatcher
-  - IMAGE=mediaproxy-relay
+#  - IMAGE=mediaproxy-dispatcher
+#  - IMAGE=mediaproxy-relay
   - IMAGE=znc
   - IMAGE=softether-vpnclient
   - IMAGE=softether-vpnserver
