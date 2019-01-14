@@ -1,20 +1,17 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
+ENV MEDIAPROXY_VERSION 2.6.6xenial
 USER root
 
-RUN echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse" > /etc/apt/sources.list && \
-    echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
-    echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN apt-get update && \
+    apt-get install -y curl
+
+RUN echo "deb http://ag-projects.com/ubuntu xenial main" >>/etc/apt/sources.list && \
+    curl -o /etc/apt/trusted.gpg.d/agp-debian-key.gpg http://download.ag-projects.com/agp-debian-key.gpg 
 
 RUN apt-get update && \
-    apt-get install -y wget
-
-RUN echo "deb http://ag-projects.com/ubuntu trusty main" >>/etc/apt/sources.list && \
-    wget -O - http://download.ag-projects.com/agp-debian-gpg.key | apt-key add -
-
-RUN apt-get update && \
-    apt-get install -y mediaproxy-dispatcher python-mysqldb
+    apt-get install -y mediaproxy-dispatcher=${MEDIAPROXY_VERSION} python-mysqldb
 
 RUN mkdir -p /etc/mediaproxy/script
 COPY script/statistic.sql /etc/mediaproxy/script
