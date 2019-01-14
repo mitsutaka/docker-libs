@@ -1,13 +1,64 @@
+
 version: 2
 jobs:
   build:
+    working_directory: /app
     docker:
-      - image: debian:stretch
+      - image: docker:stable
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Greeting
-          command: echo Hello, world.
+          name: Install tools
+          command: |
+            apk add --no-cache curl jq
       - run:
-          name: Print the Current Time
-          command: date
+          name: Check TAG files
+          command: |
+            for tag in */TAG; do
+                d=$(dirname $tag)
+                c="$(./tag_exists.sh $d)"
+                if [ "$c" = ng ]; then
+                    echo $d >> BUILDS
+                fi
+            done
+      - run:
+          name: Build images
+          command: |
+            if [ ! -f BUILDS ]; then
+                echo "nothing to build."
+                exit 0
+            fi
+            for d in $(cat BUILDS); do
+                echo
+                echo "building $d ..."
+                docker build -t mitsutaka/${d}:latest $d
+            done
+      - deploy:
+          name: Push Docker image to Docker Hub
+          command: |
+            if [ "${CIRCLE_BRANCH}" != "master" ]; then
+                exit 0
+            fi
+            if [ ! -f BUILDS ]; then
+                exit 0
+            fi
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            for d in $(cat BUILDS); do
+                echo
+                echo "pushing $d ..."
+                TAG=$(cat $d/TAG)
+                docker tag mitsutaka/${d}:latest mitsutaka/${d}:$TAG
+                docker push mitsutaka/${d}:$TAG
+                if [ -f $d/BRANCH ]; then
+                    BRANCH=$(cat $d/BRANCH)
+                    docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
+                    docker push mitsutaka/${d}:$BRANCH
+                fi
+            done
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build

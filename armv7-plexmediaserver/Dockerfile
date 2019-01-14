@@ -1,5 +1,5 @@
 FROM armv7/armhf-debian:8
-MAINTAINER "Mitz Amano <mitz@linux.com>"
+LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
 ENV VER=1.2.7.2987
 ENV SUM=1bef33a
@@ -8,18 +8,18 @@ ENV BUILD_DIR=/tmp/plexmediaserver
 ENV INSTALL_DIR=/opt/plexmediaserver
 
 RUN \
-  apt-get update && \
-  apt-get install -y curl && \
-  mkdir -p ${BUILD_DIR} && \
-  mkdir -p ${INSTALL_DIR} && \
-  curl ${URL} | tar xv -C ${BUILD_DIR} && \
-  tar xvf ${BUILD_DIR}/package.tgz -C ${INSTALL_DIR} && \
-  rm -rf ${BUILD_DIR} && \
-  apt-get clean && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/*
+	apt-get update && \
+	apt-get install -y curl && \
+	mkdir -p ${BUILD_DIR} && \
+	mkdir -p ${INSTALL_DIR} && \
+	curl ${URL} | tar xv -C ${BUILD_DIR} && \
+	tar xvf ${BUILD_DIR}/package.tgz -C ${INSTALL_DIR} && \
+	rm -rf ${BUILD_DIR} && \
+	apt-get clean && \
+	rm -rf \
+		/tmp/* \
+		/var/lib/apt/lists/* \
+		/var/tmp/*
 
 COPY entrypoint.sh /
 RUN chown root.root /entrypoint.sh && chmod 700 /entrypoint.sh

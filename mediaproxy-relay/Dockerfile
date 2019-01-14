@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-MAINTAINER "Mitz Amano <mitz@linux.com>"
+LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
 USER root
 

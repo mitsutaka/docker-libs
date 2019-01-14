@@ -1,10 +1,10 @@
 FROM ubuntu:18.04 AS build
 
-MAINTAINER Mitz Amano "mitsutaka.amano@gmail.com"
+LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
-ENV STONE_VERSION 2.3e
+ENV STONE_VERSION 2.3.e-2.1
 
 RUN apt-get update \
-    && apt-get install -y stone
+    && apt-get install -y stone=${STONE_VERSION}
 
 CMD ["stone"]

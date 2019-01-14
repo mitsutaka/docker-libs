@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER Mitz Amano <mitz@linux.com>
+LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
 ENV VERSION v4.28-9669-beta-2018.09.11
 WORKDIR /usr/local/vpnbridge

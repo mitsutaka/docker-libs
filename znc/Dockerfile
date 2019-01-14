@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
-MAINTAINER Mitz Amano "mitsutaka.amano@gmail.com"
+LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends znc \
+    && apt-get install -y --no-install-recommends znc=1.6.6-1ubuntu0.1 \
     && apt-get autoremove -y \
     && apt-get clean all \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
