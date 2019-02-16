@@ -6,6 +6,7 @@ Docker containers
 
 ## Status
 
+- [argo](https://cloud.docker.com/repository/docker/mitsutaka/argo): ![](https://img.shields.io/docker/pulls/mitsutaka/argo.svg) ![](https://img.shields.io/docker/build/mitsutaka/argo.svg)
 - [armv7-plexmediaserver](https://cloud.docker.com/repository/docker/mitsutaka/armv7-plexmediaserver): ![](https://img.shields.io/docker/pulls/mitsutaka/armv7-plexmediaserver.svg) ![](https://img.shields.io/docker/build/mitsutaka/armv7-plexmediaserver.svg)
 - [ejabberd](https://cloud.docker.com/repository/docker/mitsutaka/ejabberd): ![](https://img.shields.io/docker/pulls/mitsutaka/ejabberd.svg) ![](https://img.shields.io/docker/build/mitsutaka/ejabberd.svg)
 - [fluentd](https://cloud.docker.com/repository/docker/mitsutaka/fluentd): ![](https://img.shields.io/docker/pulls/mitsutaka/fluentd.svg) ![](https://img.shields.io/docker/build/mitsutaka/fluentd.svg)
