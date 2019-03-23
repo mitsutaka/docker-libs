@@ -1,6 +1,6 @@
 FROM ubuntu:18.04 AS build
 
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV STONE_VERSION 2.3.e-2.1
 

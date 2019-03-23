@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV OFFLINEIMAP_VERSION 7.2.3
 

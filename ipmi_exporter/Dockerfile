@@ -1,6 +1,6 @@
 FROM golang:1.11 AS build
 
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 RUN go get -v github.com/soundcloud/ipmi_exporter
 

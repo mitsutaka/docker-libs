@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV VERSION v4.28-9669-beta-2018.09.11
 WORKDIR /usr/local/vpnserver

@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV EJABBERD_VER 15.11
 

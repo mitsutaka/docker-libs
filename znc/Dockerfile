@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV ZNC_VERSION 1.6.6-1ubuntu0.1 
+ENV ZNC_VERSION 1.6.6-1ubuntu0.1
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends znc=${ZNC_VERSION} \

@@ -1,5 +1,5 @@
 FROM armv7/armhf-debian:8
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV VER=1.2.7.2987
 ENV SUM=1bef33a

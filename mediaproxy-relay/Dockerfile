@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV MEDIAPROXY_VERSION 2.6.6xenial
 USER root
@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get install -y curl
 
 RUN echo "deb http://ag-projects.com/ubuntu xenial main" >>/etc/apt/sources.list && \
-    curl -o /etc/apt/trusted.gpg.d/agp-debian-key.gpg http://download.ag-projects.com/agp-debian-key.gpg 
+    curl -o /etc/apt/trusted.gpg.d/agp-debian-key.gpg http://download.ag-projects.com/agp-debian-key.gpg
 
 RUN apt-get update && \
     apt-get install -y mediaproxy-relay=${MEDIAPROXY_VERSION}

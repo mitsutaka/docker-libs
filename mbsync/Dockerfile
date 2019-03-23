@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL maintainer="Mitz Amano <mitsutaka.amano@gmail.com>"
+LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV ISYNC_VERSION 1.3.0-1ubuntu0.18.04.0
 
