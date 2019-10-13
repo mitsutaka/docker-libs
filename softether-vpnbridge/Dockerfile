@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV VERSION v4.29-9680-rtm-2019.02.28
+ENV VERSION v4.29-9678-rtm-2019.02.28
 WORKDIR /usr/local/vpnbridge
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
