@@ -19,7 +19,7 @@ USER "${DOCKER_USER}"
 WORKDIR "/home/${DOCKER_USER}"
 
 RUN sudo apt-get update && \
-    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim apt-transport-https && \
+    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim apt-transport-https json-delta && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Install docker

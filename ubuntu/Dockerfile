@@ -19,7 +19,7 @@ USER "${DOCKER_USER}"
 WORKDIR "/home/${DOCKER_USER}"
 
 RUN yes | sudo unminimize && \
-    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim && \
+    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim json-delta && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Install docker
