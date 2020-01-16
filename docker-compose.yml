@@ -1,0 +1,10 @@
+version: "3"
+services:
+  debian:
+    build:
+      context: debian
+    image: devel:debian
+  ubuntu:
+    build:
+      context: ubuntu
+    image: devel:ubuntu

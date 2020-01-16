@@ -1,4 +1,3 @@
-
 version: 2
 jobs:
   build:
@@ -59,8 +58,21 @@ jobs:
                 fi
             done
 
+  docker-compose-build:
+    working_directory: /app
+    docker:
+      - image: docker:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: docker-compose-build
+          command: |
+            docker-compose -f docker-compose.yml build --parallel
+
 workflows:
   version: 2
   main:
     jobs:
       - build
+      - docker-compose-build
