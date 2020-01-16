@@ -61,7 +61,7 @@ jobs:
   docker-compose-build:
     working_directory: /app
     docker:
-      - image: docker:stable
+      - image: docker/compose:latest
     steps:
       - checkout
       - setup_remote_docker
