@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV OFFLINEIMAP_VERSION 7.3.0
+ENV OFFLINEIMAP_VERSION 7.3.2
 
 RUN apt-get update \
     && apt-get install -y sudo curl git python-pip make
