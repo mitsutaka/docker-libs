@@ -23,6 +23,7 @@ RUN pacman -Syu --noconfirm \
         go \
         git \
         tmux \
+        rsync \
     && useradd -m -G wheel,docker "$DEFAULT_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
