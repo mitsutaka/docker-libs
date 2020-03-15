@@ -3,7 +3,7 @@ version: "3"
 services:
   debug:
     restart: always
-    image: devel:arch
+    image: mitsutaka/debug:arch
     container_name: debug
     hostname: debug
     network_mode: bridge
