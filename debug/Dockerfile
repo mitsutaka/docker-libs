@@ -21,6 +21,8 @@ RUN pacman -Syu --noconfirm \
         openssh \
         python-pip \
         go \
+        git \
+        tmux \
     && useradd -m -G wheel,docker "$DEFAULT_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
