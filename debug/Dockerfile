@@ -24,6 +24,7 @@ RUN pacman -Syu --noconfirm \
         git \
         tmux \
         rsync \
+        bind-tools \
     && useradd -m -G wheel,docker "$DEFAULT_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
@@ -42,6 +43,10 @@ RUN cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-
 
 RUN systemctl enable sshd.service \
     && ln -s /usr/bin/vim /usr/bin/vi
+
+RUN su mitz -c "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin; \
+cd /tmp/yay-bin; \
+makepkg --rmdeps --clean --syncdeps --install --noconfirm"
 
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd
