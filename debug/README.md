@@ -3,6 +3,7 @@
 - Arch linux based
 - Running systemd
 - `sshd.service` is enabled.
+- Installed daily commands.
 
 ## Usage
 
