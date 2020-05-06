@@ -30,7 +30,9 @@ RUN pacman -Syu --noconfirm \
         zip \
         unzip \
         p7zip \
-    && useradd -m -G wheel,docker "$DEFAULT_USER" \
+        zsh \
+        zsh-completions \
+    && useradd -m -G wheel,docker -s /usr/bin/zsh "$DEFAULT_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
     && rm -rf /var/cache/pacman
