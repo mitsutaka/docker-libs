@@ -17,7 +17,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: mitsutaka/docker-libs/ejabberd
-          tag_with_ref: true
-          tag_with_sha: true
           tags: latest,15.11
-          path: ./ejabberd
+          dockerfile: ejabberd/Dockerfile
