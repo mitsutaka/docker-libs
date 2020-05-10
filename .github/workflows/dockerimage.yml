@@ -2,14 +2,12 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +16,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: docker.pkg.github.com/mitsutaka/docker-libs/ejabberd
+          repository: mitsutaka/docker-libs/ejabberd
+          tag_with_ref: true
+          tag_with_sha: true
           tags: latest,15.11
-          path: ejabberd
+          path: ./ejabberd
