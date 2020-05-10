@@ -11,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@master
       - name: ejabberd
         uses: docker/build-push-action@v1.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.pkg.github.com
           repository: mitsutaka/docker-libs/ejabberd
           tags: latest,15.11
-          dockerfile: ejabberd/Dockerfile
+          path: ejabberd
