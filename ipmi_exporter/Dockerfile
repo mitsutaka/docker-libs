@@ -6,7 +6,9 @@ RUN go get -v github.com/soundcloud/ipmi_exporter
 
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y --no-install-recommends freeipmi
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends freeipmi \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY --from=build /go/bin /usr/local/ipmi_exporter/bin
 COPY --from=build /go/src/github.com/soundcloud/ipmi_exporter/LICENSE /usr/local/ipmi-exporter/LICENSE
