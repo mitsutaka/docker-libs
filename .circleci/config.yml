@@ -29,7 +29,7 @@ jobs:
                 exit 0
             fi
             for d in $(cat BUILDS); do
-                echo
+                echo "linting $d ..."
                 echo lint $name
                 docker run --rm -i hadolint/hadolint /bin/hadolint - --ignore DL3008 --ignore DL3016 < $d/Dockerfile
                 echo "building $d ..."
