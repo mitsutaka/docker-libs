@@ -13,7 +13,6 @@ Docker containers
 - [ejabberd](https://cloud.docker.com/repository/docker/mitsutaka/ejabberd): ![](https://img.shields.io/docker/pulls/mitsutaka/ejabberd.svg) ![](https://img.shields.io/docker/build/mitsutaka/ejabberd.svg)
 - [fluentd](https://cloud.docker.com/repository/docker/mitsutaka/fluentd): ![](https://img.shields.io/docker/pulls/mitsutaka/fluentd.svg) ![](https://img.shields.io/docker/build/mitsutaka/fluentd.svg)
 - [ipmi_exporter](https://cloud.docker.com/repository/docker/mitsutaka/ipmi_exporter): ![](https://img.shields.io/docker/pulls/mitsutaka/ipmi_exporter.svg) ![](https://img.shields.io/docker/build/mitsutaka/ipmi_exporter.svg)
-- [jenkins](https://cloud.docker.com/repository/docker/mitsutaka/jenkins): ![](https://img.shields.io/docker/pulls/mitsutaka/jenkins.svg) ![](https://img.shields.io/docker/build/mitsutaka/jenkins.svg)
 - [mbsync](https://cloud.docker.com/repository/docker/mitsutaka/mbsync): ![](https://img.shields.io/docker/pulls/mitsutaka/mbsync.svg) ![](https://img.shields.io/docker/build/mitsutaka/mbsync.svg)
 - [mediaproxy-dispatcher](https://cloud.docker.com/repository/docker/mitsutaka/mediaproxy-dispatcher): ![](https://img.shields.io/docker/pulls/mitsutaka/mediaproxy-dispatcher.svg) ![](https://img.shields.io/docker/build/mitsutaka/mediaproxy-dispatcher.svg)
 - [mediaproxy-relay](https://cloud.docker.com/repository/docker/mitsutaka/mediaproxy-relay): ![](https://img.shields.io/docker/pulls/mitsutaka/mediaproxy-relay.svg) ![](https://img.shields.io/docker/build/mitsutaka/mediaproxy-relay.svg)
