@@ -3,7 +3,6 @@ LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV EJABBERD_VER 15.11
 
-USER nobody
 RUN echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse" >/etc/apt/sources.list && \
 	echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse" >>/etc/apt/sources.list && \
 	echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-security main restricted universe multiverse" >>/etc/apt/sources.list
@@ -19,7 +18,7 @@ RUN echo "deb http://packages.erlang-solutions.com/ubuntu trusty contrib" >>/etc
 	rm -f erlang_solutions.asc
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends build-essential git autoconf esl-erlang=1:17.5.3 libssl-dev libmysqlclient-dev libyaml-dev libexpat1-dev mysql-client libyaml-0-2 \
+	&& apt-get install -y --no-install-recommends build-essential git autoconf automake esl-erlang=1:17.5.3 libssl-dev libmysqlclient-dev libyaml-dev libexpat1-dev mysql-client libyaml-0-2 \
     && apt-get autoremove -y \
     && apt-get clean all \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -33,7 +32,7 @@ RUN git clone https://github.com/processone/ejabberd.git . && \
 	git checkout -b $EJABBERD_VER tags/$EJABBERD_VER && \
 	./autogen.sh && ./configure --enable-mysql && make && make install
 
-RUN apt-get purge -y build-essential git autoconf wget libssl-dev libmysqlclient-dev libyaml-dev libexpat1-dev && \
+RUN apt-get purge -y build-essential git autoconf automake wget libssl-dev libmysqlclient-dev libyaml-dev libexpat1-dev && \
 	apt-get autoremove -y && \
 	apt-get clean all && \
 	rm -rf ~/ejabberd
