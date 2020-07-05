@@ -30,7 +30,7 @@ jobs:
             fi
             for d in $(cat BUILDS); do
                 echo "linting $d ..."
-                docker run --rm -i hadolint/hadolint /bin/hadolint - --ignore DL3008 --ignore DL3016 < $d/Dockerfile
+                docker run --rm -i hadolint/hadolint /bin/hadolint - --ignore DL3008 --ignore DL3018 --ignore DL3016 < $d/Dockerfile
                 echo "building $d ..."
                 docker build -t mitsutaka/${d}:latest $d
             done

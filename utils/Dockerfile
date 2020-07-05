@@ -11,11 +11,11 @@ ENV JQ_VERSION=1.6-r0
 ENV PARALLEL_VERSION=20191122-r0
 
 RUN apk add --no-cache \
-openssh=${OPENSSH_VERSION} \
-curl=${CURL_VERSION} \
-rsync=${RSYNC_VERSION} \
-bash=${BASH_VERSION} \
-gawk=${GAWK_VERSION} \
-bind-tools=${BIND_TOOLS_VERSION} \
-jq=${JQ_VERSION} \
-parallel=${PARALLEL_VERSION}
+openssh \
+curl \
+rsync \
+bash \
+gawk \
+bind-tools \
+jq \
+parallel
