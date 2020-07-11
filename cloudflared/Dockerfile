@@ -1,7 +1,7 @@
 # use a builder image for building cloudflare
 FROM golang:1.14 as builder
 
-ARG VERSION=2020.6.5
+ARG VERSION=2020.7.1
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.gz | \
