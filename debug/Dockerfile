@@ -9,27 +9,28 @@ ENV HOST_DOCKER_GROUP_ID 976
 RUN echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist
 
 RUN pacman -Syu --noconfirm \
+        atool \
         base \
         base-devel \
-        which \
-        inetutils \
-        sudo \
-        docker \
-        man-db \
         bash-completion \
-        vim \
-        openssh \
-        python-pip \
-        go \
-        git \
-        tmux \
-        rsync \
         bind-tools \
-        atool \
-        unrar \
-        zip \
-        unzip \
+        docker \
+        git \
+        go \
+        htop \
+        inetutils \
+        man-db \
+        openssh \
         p7zip \
+        python-pip \
+        rsync \
+        sudo \
+        tmux \
+        unrar \
+        unzip \
+        vim \
+        which \
+        zip \
         zsh \
         zsh-completions \
     && useradd -m -G wheel,docker -s /usr/bin/zsh "$DEFAULT_USER" \
