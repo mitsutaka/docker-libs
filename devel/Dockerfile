@@ -29,15 +29,18 @@ RUN pacman -Syu --noconfirm \
         jq \
         keychain \
         kubectl \
+        kustomize \
         man-db \
         mosh \
         openssh \
         p7zip \
+        parallel \
         python-pip \
         ripgrep \
         rsync \
         shellcheck \
         sudo \
+        terraform \
         thefuck \
         tig \
         tldr \
@@ -80,6 +83,7 @@ RUN su mitz -c 'yay -Syu --noconfirm \
         fcct \
 #        genact-bin \
         hadolint-bin \
+        kind-bin \
         kompose-bin \
         kubeadm-bin \
         kubebuilder \
