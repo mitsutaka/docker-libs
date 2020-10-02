@@ -1,4 +1,4 @@
-# debug container
+# development environment container
 
 - Arch linux based
 - Running systemd
@@ -8,7 +8,7 @@
 ## Usage
 
 ```console
-docker-compose -f docker-compose.yaml up -d debug
+docker-compose -f docker-compose.yaml up -d devel
 ```
 
 ## Extra Options

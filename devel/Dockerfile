@@ -1,4 +1,4 @@
-FROM archlinux:latest
+FROM archlinux:20200908
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV container docker
@@ -6,25 +6,41 @@ ENV container docker
 ENV DEFAULT_USER mitz
 ENV HOST_DOCKER_GROUP_ID 976
 
-RUN echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist
+RUN echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist && \
+    echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
 
+# Install from Arch mirror
 RUN pacman -Syu --noconfirm \
         atool \
         base \
         base-devel \
         bash-completion \
         bind-tools \
+        diff-so-fancy \
         docker \
+        fdupes \
+        fzf \
         git \
         go \
+        helm \
         htop \
+        hugo \
         inetutils \
+        jq \
+        keychain \
+        kubectl \
         man-db \
+        mosh \
         openssh \
         p7zip \
         python-pip \
+        ripgrep \
         rsync \
+        shellcheck \
         sudo \
+        thefuck \
+        tig \
+        tldr \
         tmux \
         unrar \
         unzip \
@@ -55,6 +71,24 @@ RUN systemctl enable sshd.service \
 RUN su mitz -c "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin; \
 cd /tmp/yay-bin; \
 makepkg --rmdeps --clean --syncdeps --install --noconfirm"
+
+# Install from AUR
+RUN su mitz -c 'yay -Syu --noconfirm \
+        circleci-cli-bin \
+        cloudflared-bin \
+        docker-compose-bin \
+        fcct \
+#        genact-bin \
+        hadolint-bin \
+        kompose-bin \
+        kubeadm-bin \
+        kubebuilder \
+        kubeval \
+        rke-bin \
+        sshcode \
+        stern-bin \
+        vault-bin \
+    ' && rm -rf /var/cache/pacman
 
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd

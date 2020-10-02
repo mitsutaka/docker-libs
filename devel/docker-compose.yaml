@@ -3,9 +3,9 @@ version: "3"
 services:
   debug:
     restart: always
-    image: mitsutaka/debug:arch
-    container_name: debug
-    hostname: debug
+    image: mitsutaka/devel:arch
+    container_name: devel
+    hostname: devel
     network_mode: bridge
     volumes:
       - /home/mitz:/home/mitz
