@@ -53,19 +53,19 @@ RUN pacman -Syu --noconfirm \
         zip \
         zsh \
         zsh-completions \
-    && useradd -m -G wheel,docker -s /usr/bin/zsh "$DEFAULT_USER" \
+    && useradd -m -G wheel,docker -s /bin/zsh "$DEFAULT_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
     && rm -rf /var/cache/pacman
 
 # hadolint ignore=SC2010,SC2039,DL3003,DL4006
-RUN cd /lib/systemd/system/sysinit.target.want && \
-    ls | grep -v systemd-tmpfiles-setup | xargs rm -vf "$1" && \
-    rm -vf /etc/systemd/system/*.wants/* && \
-    rm -vf /lib/systemd/system/local-fs.target.wants/* && \
-    rm -vf /lib/systemd/system/sockets.target.wants/*udev* && \
-    rm -vf /lib/systemd/system/sockets.target.wants/*initctl* && \
-    rm -vf /lib/systemd/system/systemd-update-utmp*
+RUN cd /lib/systemd/system/sysinit.target.wants \
+    && ls | grep -v systemd-tmpfiles-setup | xargs rm -vf "$1" \
+    && rm -vf /etc/systemd/system/*.wants/* \
+    && rm -vf /lib/systemd/system/local-fs.target.wants/* \
+    && rm -vf /lib/systemd/system/sockets.target.wants/*udev* \
+    && rm -vf /lib/systemd/system/sockets.target.wants/*initctl* \
+    && rm -vf /lib/systemd/system/systemd-update-utmp*
 #    rm -vf /lib/systemd/system/basic.target.wants/*;\
 #    rm -vf /lib/systemd/system/anaconda.target.wants/*; \
 #    rm -vf /lib/systemd/system/plymouth*; \
