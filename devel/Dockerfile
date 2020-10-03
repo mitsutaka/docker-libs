@@ -6,6 +6,7 @@ ENV container docker
 ENV DEFAULT_USER mitz
 ENV HOST_DOCKER_GROUP_ID 976
 
+# hadolint ignore=SC2016
 RUN echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist && \
     echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
 
@@ -57,12 +58,14 @@ RUN pacman -Syu --noconfirm \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
     && rm -rf /var/cache/pacman
 
-RUN cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-setup | xargs rm -vf $1 \
-    rm -vf /etc/systemd/system/*.wants/*;\
-    rm -vf /lib/systemd/system/local-fs.target.wants/*; \
-    rm -vf /lib/systemd/system/sockets.target.wants/*udev*; \
-    rm -vf /lib/systemd/system/sockets.target.wants/*initctl*; \
-    rm -vf /lib/systemd/system/systemd-update-utmp*;
+# hadolint ignore=SC2010,SC2039,DL3003,DL4006
+RUN cd /lib/systemd/system/sysinit.target.want && \
+    ls | grep -v systemd-tmpfiles-setup | xargs rm -vf "$1" && \
+    rm -vf /etc/systemd/system/*.wants/* && \
+    rm -vf /lib/systemd/system/local-fs.target.wants/* && \
+    rm -vf /lib/systemd/system/sockets.target.wants/*udev* && \
+    rm -vf /lib/systemd/system/sockets.target.wants/*initctl* && \
+    rm -vf /lib/systemd/system/systemd-update-utmp*
 #    rm -vf /lib/systemd/system/basic.target.wants/*;\
 #    rm -vf /lib/systemd/system/anaconda.target.wants/*; \
 #    rm -vf /lib/systemd/system/plymouth*; \
