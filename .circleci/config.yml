@@ -3,10 +3,11 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:stable
+      - image: docker:19.03.13
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: "19.03.13"
       - run:
           name: Install tools
           command: |
