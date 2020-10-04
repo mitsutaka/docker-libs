@@ -72,6 +72,7 @@ RUN cd /lib/systemd/system/sysinit.target.wants \
 #    rm -f /lib/systemd/system/multi-user.target.wants/*;\
 
 RUN systemctl enable sshd.service \
+    && systemctl disable systemd-resolved.service \
     && ln -s /usr/bin/vim /usr/bin/vi
 
 RUN su mitz -c "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin; \
