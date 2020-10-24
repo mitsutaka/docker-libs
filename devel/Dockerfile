@@ -92,6 +92,7 @@ RUN su mitz -c 'yay -Syu --noconfirm \
         kubeadm-bin \
         kubebuilder \
         kubeval \
+        rclone-bin \
         rke-bin \
         sshcode \
         stern-bin \
