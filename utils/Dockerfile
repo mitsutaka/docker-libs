@@ -3,6 +3,7 @@ LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
+    alertmanager \
     bash \
     bind-tools \
     curl \
