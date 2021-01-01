@@ -5,8 +5,7 @@ jobs:
       image: ubuntu-2004:202010-01
     environment:
       DOCKER_BUILDKIT: 1
-      BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7,linux/arm/v6
-    working_directory: /app
+      BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
     steps:
       - checkout
       - run:
@@ -29,7 +28,8 @@ jobs:
       - run:
           name: Install tools
           command: |
-            sudo apt-get install -y --no-recommends curl jq
+            sudo apt-get update
+            sudo apt-get install -y curl jq
       - run:
           name: Check TAG files
           command: |
@@ -40,6 +40,10 @@ jobs:
                     echo $d >> BUILDS
                 fi
             done
+      - run:
+          name: Log in to docker hub
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
           name: Build and push images
           command: |
@@ -53,7 +57,6 @@ jobs:
                 docker run --rm -i hadolint/hadolint /bin/hadolint - < $d/Dockerfile
                 echo "building and pushing $d ..."
                 TAG=$(cat $d/TAG)
-                docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:latest --push $d
                 docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$TAG --push $d
                 if [ -f $d/BRANCH ]; then
                     BRANCH=$(cat $d/BRANCH)
