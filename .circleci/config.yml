@@ -1,18 +1,35 @@
-version: 2
+version: 2.1
 jobs:
   build:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      DOCKER_BUILDKIT: 1
+      BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7,linux/arm/v6
     working_directory: /app
-    docker:
-      - image: docker:19.03.13
     steps:
       - checkout
-      - setup_remote_docker:
-          # archlinxu build needs newer Docker Engine to avoid failing user/group creation
-          version: "19.03.13"
+      - run:
+          name: Install buildx
+          command: |
+            BUILDX_BINARY_URL="https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64"
+
+            curl --output docker-buildx \
+              --silent --show-error --location --fail --retry 3 \
+              "$BUILDX_BINARY_URL"
+
+            mkdir -p ~/.docker/cli-plugins
+
+            mv docker-buildx ~/.docker/cli-plugins/
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+
+            docker buildx install
+            # Run binfmt
+            docker run --rm --privileged tonistiigi/binfmt:latest --install "$BUILDX_PLATFORMS"
       - run:
           name: Install tools
           command: |
-            apk add --no-cache curl jq
+            sudo apt-get install -y --no-recommends curl jq
       - run:
           name: Check TAG files
           command: |
@@ -24,40 +41,48 @@ jobs:
                 fi
             done
       - run:
-          name: Build images
+          name: Build and push images
           command: |
             if [ ! -f BUILDS ]; then
                 echo "nothing to build."
                 exit 0
             fi
+            docker buildx create --name mybuilder --use
             for d in $(cat BUILDS); do
                 echo "linting $d ..."
                 docker run --rm -i hadolint/hadolint /bin/hadolint - < $d/Dockerfile
-                echo "building $d ..."
-                docker build -t mitsutaka/${d}:latest $d
-            done
-      - deploy:
-          name: Push Docker image to Docker Hub
-          command: |
-            if [ "${CIRCLE_BRANCH}" != "master" ]; then
-                exit 0
-            fi
-            if [ ! -f BUILDS ]; then
-                exit 0
-            fi
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            for d in $(cat BUILDS); do
-                echo
-                echo "pushing $d ..."
+                echo "building and pushing $d ..."
                 TAG=$(cat $d/TAG)
-                docker tag mitsutaka/${d}:latest mitsutaka/${d}:$TAG
-                docker push mitsutaka/${d}:$TAG
+                docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:latest --push $d
+                docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$TAG --push $d
                 if [ -f $d/BRANCH ]; then
                     BRANCH=$(cat $d/BRANCH)
                     docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
-                    docker push mitsutaka/${d}:$BRANCH
+                    docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$BRANCH --push $d
                 fi
             done
+#      - deploy:
+#          name: Push Docker image to Docker Hub
+#          command: |
+#            if [ "${CIRCLE_BRANCH}" != "master" ]; then
+#                exit 0
+#            fi
+#            if [ ! -f BUILDS ]; then
+#                exit 0
+#            fi
+#            docker login -u $DOCKER_USER -p $DOCKER_PASS
+#            for d in $(cat BUILDS); do
+#                echo
+#                echo "pushing $d ..."
+#                TAG=$(cat $d/TAG)
+#                docker tag mitsutaka/${d}:latest mitsutaka/${d}:$TAG
+#                docker push mitsutaka/${d}:$TAG
+#                if [ -f $d/BRANCH ]; then
+#                    BRANCH=$(cat $d/BRANCH)
+#                    docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
+#                    docker push mitsutaka/${d}:$BRANCH
+#                fi
+#            done
 
   docker-compose-build:
     working_directory: /app
