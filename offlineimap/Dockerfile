@@ -12,7 +12,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 WORKDIR /src
 
-# hadolint ignore=DL3003
+# hadolint ignore=DL3003,DL3042
 RUN curl -L "https://github.com/OfflineIMAP/offlineimap/archive/v${OFFLINEIMAP_VERSION}.tar.gz" \
     | tar xvz \
     && cd offlineimap-"${OFFLINEIMAP_VERSION}" \
