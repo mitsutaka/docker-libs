@@ -1,7 +1,6 @@
-# use a builder image for building cloudflare
-FROM golang:1.14 as builder
+FROM golang:1.16-rc as builder
 
-ARG VERSION=2020.11.3
+ARG VERSION=2020.11.11
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.gz | \
@@ -11,15 +10,12 @@ RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.
 
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=arm
-ENV GOARM=7
 
 WORKDIR /go/src/github.com/cloudflare/cloudflared/
 
 RUN make cloudflared
 
-FROM arm32v7/alpine
+FROM alpine:3
 
 COPY --from=builder --chown=nobody /go/src/github.com/cloudflare/cloudflared/cloudflared /usr/local/bin/
 COPY --from=builder --chown=nobody /go/src/github.com/cloudflare/cloudflared/LICENSE /usr/local/bin/
