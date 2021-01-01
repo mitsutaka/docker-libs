@@ -1,8 +1,9 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV ISYNC_VERSION 1.3.0-1ubuntu0.18.04.0
+ENV ISYNC_VERSION 1.3.0-2
 
+# hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends isync=${ISYNC_VERSION} ca-certificates \
     && apt-get autoremove -y \
