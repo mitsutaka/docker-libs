@@ -1,3 +1,4 @@
+# hadolint ignore=DL3007
 FROM archlinux:latest
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
