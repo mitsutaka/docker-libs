@@ -1,7 +1,7 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV OPENVPN_VERSION 2.4.4-2ubuntu1.3
+ENV OPENVPN_VERSION 2.4.7-1ubuntu2
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openvpn=${OPENVPN_VERSION} \
