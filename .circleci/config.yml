@@ -60,8 +60,7 @@ jobs:
                 docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$TAG --push $d
                 if [ -f $d/BRANCH ]; then
                     BRANCH=$(cat $d/BRANCH)
-                    docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
-                    docker push mitsutaka/${d}:$BRANCH
+                    docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$BRANCH --push $d
                 fi
             done
 
