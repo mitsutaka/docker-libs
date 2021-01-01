@@ -61,31 +61,9 @@ jobs:
                 if [ -f $d/BRANCH ]; then
                     BRANCH=$(cat $d/BRANCH)
                     docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
-                    docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$BRANCH --push $d
+                    docker push mitsutaka/${d}:$BRANCH
                 fi
             done
-#      - deploy:
-#          name: Push Docker image to Docker Hub
-#          command: |
-#            if [ "${CIRCLE_BRANCH}" != "master" ]; then
-#                exit 0
-#            fi
-#            if [ ! -f BUILDS ]; then
-#                exit 0
-#            fi
-#            docker login -u $DOCKER_USER -p $DOCKER_PASS
-#            for d in $(cat BUILDS); do
-#                echo
-#                echo "pushing $d ..."
-#                TAG=$(cat $d/TAG)
-#                docker tag mitsutaka/${d}:latest mitsutaka/${d}:$TAG
-#                docker push mitsutaka/${d}:$TAG
-#                if [ -f $d/BRANCH ]; then
-#                    BRANCH=$(cat $d/BRANCH)
-#                    docker tag mitsutaka/${d}:$TAG mitsutaka/${d}:$BRANCH
-#                    docker push mitsutaka/${d}:$BRANCH
-#                fi
-#            done
 
   docker-compose-build:
     working_directory: /app
