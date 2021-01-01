@@ -1,4 +1,4 @@
-FROM archlinux:20200908
+FROM archlinux:latest
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV container docker
