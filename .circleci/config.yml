@@ -58,6 +58,9 @@ jobs:
                 docker run --rm -i hadolint/hadolint /bin/hadolint - < $d/Dockerfile
                 echo "building and pushing $d ..."
                 TAG=$(cat $d/TAG)
+                if [ -f $d/BUILDX_PLATFORMS ]; then
+                    BUILDX_PLATFORMS=$(cat $d/BUILDX_PLATFORMS)
+                fi
                 docker buildx build --platform ${BUILDX_PLATFORMS} -t mitsutaka/${d}:$TAG --push $d
                 if [ -f $d/BRANCH ]; then
                     BRANCH=$(cat $d/BRANCH)
