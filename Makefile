@@ -21,7 +21,7 @@ build:
 
 build-load:
 	-docker buildx create --name $(BUILDX_NAME)
-	docker buildx use --name $(BUILDX_NAME)
+	docker buildx use $(BUILDX_NAME)
 	for name in $(IMAGES); do \
 		echo building $${name}; \
 		docker buildx build -t mitsutaka/$${name}:latest --load $${name}; \
