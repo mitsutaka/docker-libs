@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV DOCKER_USER mitz
@@ -24,10 +24,10 @@ RUN yes | sudo unminimize && \
 
 # Install docker
 RUN sudo apt-get update && \
-    sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common lsb-release && \
+    sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common lsb-release && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
     sudo apt-key fingerprint 0EBFCD88 && \
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" && \
+    sudo add-apt-repository "deb https://download.docker.com/linux/ubuntu focal stable" && \
     sudo apt-get update && \
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io && \
     sudo rm -rf /var/lib/apt/lists/* && \
