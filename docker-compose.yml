@@ -8,3 +8,11 @@ services:
     build:
       context: ubuntu
     image: devel:ubuntu
+  centos:
+    build:
+      context: centos
+    image: devel:centos
+  fedora:
+    build:
+      context: fedora
+    image: devel:fedora
