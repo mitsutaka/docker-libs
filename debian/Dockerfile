@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV DOCKER_USER mitz
@@ -27,7 +27,7 @@ RUN sudo apt-get update && \
     sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common lsb-release && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - && \
     sudo apt-key fingerprint 0EBFCD88 && \
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian stretch stable" && \
+    sudo add-apt-repository "deb https://download.docker.com/linux/debian buster stable" && \
     sudo apt-get update && \
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io && \
     sudo rm -rf /var/lib/apt/lists/* && \
