@@ -1,4 +1,4 @@
-FROM golang:1.15 AS build
+FROM golang:1.15.8 AS build
 
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
