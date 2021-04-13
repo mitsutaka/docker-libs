@@ -1,6 +1,6 @@
-FROM golang:1.16.2 as builder
+FROM golang:1.16.3 as builder
 
-ARG VERSION=2021.3.1
+ARG VERSION=2021.4.0
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.gz | \
@@ -8,7 +8,6 @@ RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.
     && mkdir -p /go/src/github.com/cloudflare/ \
     && mv /tmp/cloudflared-${VERSION} /go/src/github.com/cloudflare/cloudflared
 
-ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 
 WORKDIR /go/src/github.com/cloudflare/cloudflared/
