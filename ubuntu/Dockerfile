@@ -4,6 +4,7 @@ LABEL maintainer="Mitz Amano <mitz@linux.com>"
 ENV DOCKER_USER mitz
 ENV HOST_DOCKER_GROUP_ID 976
 
+# hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends sudo \
     && adduser --disabled-password --gecos '' "$DOCKER_USER" \
@@ -18,11 +19,14 @@ USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
 
+SHELL /bin/bash
+# hadolint ignore=DL3004
 RUN yes | sudo unminimize && \
     sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Install docker
+# hadolint ignore=DL3004
 RUN sudo apt-get update && \
     sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common lsb-release && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \

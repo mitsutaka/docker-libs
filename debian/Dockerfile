@@ -18,11 +18,13 @@ USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
 
+# hadolint ignore=DL3004
 RUN sudo apt-get update && \
     sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim apt-transport-https && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Install docker
+# hadolint ignore=DL3004
 RUN sudo apt-get update && \
     sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common lsb-release && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - && \

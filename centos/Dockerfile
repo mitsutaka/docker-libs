@@ -4,8 +4,7 @@ LABEL maintainer="Mitz Amano <mitz@linux.com>"
 ENV DOCKER_USER mitz
 #ENV HOST_DOCKER_GROUP_ID 976
 
-RUN dnf upgrade -y \
-    && dnf install -y sudo \
+RUN dnf install -y sudo \
     && useradd -m -G wheel "$DOCKER_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DOCKER_USER/.sudo_as_admin_successful \
@@ -15,6 +14,7 @@ USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
 
+# hadolint ignore=DL3004
 RUN sudo dnf install -y man-db bash-completion openssh vim && \
     sudo dnf clean all
 
