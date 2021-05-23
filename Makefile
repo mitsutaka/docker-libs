@@ -1,4 +1,4 @@
-IMAGES = $(shell find * -name Dockerfile | grep -vE "(armv7-plexmediaserver|mediaproxy-|softether-)" | xargs dirname)
+IMAGES = $(shell find * -name Dockerfile | grep -vE "(armv7-plexmediaserver|mediaproxy-|softether-)" | xargs -I {} dirname {})
 BUILDX_NAME := docker-libs
 
 # Unsupported linux/386,linux/arm/v6 for ubuntu:20.04
