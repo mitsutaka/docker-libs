@@ -40,7 +40,8 @@ RUN pacman -Syu --noconfirm \
         zsh \
         zsh-completions \
     && useradd -m -G wheel -s /bin/zsh "$DEFAULT_USER" \
-    && mkdir -m 700 -p /home/$DEFAULT_USER/.ssh \
+    && mkdir -p /home/$DEFAULT_USER/.ssh \
+    && chmod 0755 /home/$DEFAULT_USER/.ssh \
     && chown $DEFAULT_USER /home/$DEFAULT_USER/.ssh \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DEFAULT_USER/.sudo_as_admin_successful \
