@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV DOCKER_USER mitz
