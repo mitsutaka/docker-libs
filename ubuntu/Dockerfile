@@ -19,7 +19,6 @@ USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
 
-SHELL /bin/bash
 # hadolint ignore=DL3004
 RUN yes | sudo unminimize && \
     sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim && \
