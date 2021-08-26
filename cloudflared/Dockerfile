@@ -1,6 +1,6 @@
 FROM golang:1.17.0 as builder
 
-ARG VERSION=2021.8.2
+ARG VERSION=2021.8.3
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSLf https://github.com/cloudflare/cloudflared/archive/${VERSION}.tar.gz | \
