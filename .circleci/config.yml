@@ -85,4 +85,4 @@ workflows:
   main:
     jobs:
       - build
-      - docker-compose-build
+      #- docker-compose-build
