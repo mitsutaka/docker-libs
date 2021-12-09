@@ -7,6 +7,7 @@ RUN apk add --no-cache \
     bash \
     bind-tools \
     curl \
+    findutils \
     gawk \
     ipmitool \
     jq \
