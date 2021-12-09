@@ -6,6 +6,7 @@ RUN apk add --no-cache \
     alertmanager \
     bash \
     bind-tools \
+    coreutils \
     curl \
     findutils \
     gawk \
