@@ -3,6 +3,9 @@ BUILDX_NAME := docker-libs
 
 # Unsupported linux/386,linux/arm/v6 for ubuntu:20.04
 BUILDX_PLATFORMS := linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7
+BUILDX_LOAD := true
+DOCKER_BUILDKIT := 1
+DOCKER_HOST :=
 
 lint:
 	@for name in $(IMAGES); do \
@@ -18,24 +21,11 @@ pre:
 build-all: pre
 	for name in $(IMAGES); do \
 		echo building $${name}; \
-		env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) ./build.sh $${name}; \
+		env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) BUILDX_LOAD=$(BUILDX_LOAD) ./build.sh $${name}; \
 	done
 
 build-%: pre
-	env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) ./build.sh $(subst build-,,$@)
-
-pre-load:
-	-docker buildx create --name $(BUILDX_NAME)
-	docker buildx use $(BUILDX_NAME)
-
-build-load-all: pre-load
-	for name in $(IMAGES); do \
-		echo building $${name}; \
-		docker buildx build -t mitsutaka/$${name}:latest --load $${name}; \
-	done
-
-build-load-%: pre-load
-	docker buildx build -t mitsutaka/$(subst build-load-,,$@):latest --load $(subst build-load-,,$@)
+	env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) BUILDX_LOAD=$(BUILDX_LOAD) ./build.sh $(subst build-,,$@)
 
 clean:
 	docker buildx rm $(BUILDX_NAME)
