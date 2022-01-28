@@ -1,5 +1,5 @@
 # hadolint ignore=DL3007
-FROM archlinux:base-20211010.0.36274
+FROM archlinux:base-20220123.0.45312
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV container docker
