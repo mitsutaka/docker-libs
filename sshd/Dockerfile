@@ -1,5 +1,5 @@
 # hadolint ignore=DL3007
-FROM archlinux:base-20220123.0.45312
+FROM archlinux:latest
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV container docker
@@ -10,19 +10,23 @@ COPY mirrorlist /etc/pacman.d/mirrorlist
 
 # Install from Arch mirror
 RUN pacman -Syu --noconfirm \
-    atool \
     base \
     base-devel \
     bash-completion \
     bind-tools \
+    diff-so-fancy \
     fdupes \
     fzf \
     git \
     go \
     htop \
+    imagemagick \
     inetutils \
     jq \
     keychain \
+    libavif \
+    libheif \
+    neovim \
     openssh \
     p7zip \
     parallel \
@@ -32,7 +36,6 @@ RUN pacman -Syu --noconfirm \
     tmux \
     unrar \
     unzip \
-    neovim \
     which \
     zip \
     zsh \
@@ -52,7 +55,8 @@ cd /tmp/yay-bin && \
 makepkg --rmdeps --clean --syncdeps --install --noconfirm && \
 rm -rf /tmp/yay-bin && \
 yay -Syu --noconfirm \
-        cloudflared-bin \
+        atool \
+        cloudflared \
         rclone-bin \
 " && \
     rm -rf /var/cache/pacman && \
