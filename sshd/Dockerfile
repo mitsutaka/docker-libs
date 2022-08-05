@@ -51,14 +51,13 @@ RUN pacman -Syu --noconfirm \
 
 # hadolint ignore=DL3069
 RUN su $DEFAULT_USER -c "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
-cd /tmp/yay-bin && \
-makepkg --rmdeps --clean --syncdeps --install --noconfirm && \
-rm -rf /tmp/yay-bin && \
-yay -Syu --noconfirm \
-        atool \
-        cloudflared \
-        rclone-bin \
-" && \
+    cd /tmp/yay-bin && \
+    makepkg --rmdeps --clean --syncdeps --install --noconfirm && \
+    rm -rf /tmp/yay-bin && \
+    yay -Syu --noconfirm \
+    atool \
+    rclone-bin \
+    " && \
     rm -rf /var/cache/pacman && \
     rm -rf /home/$DEFAULT_USER/.cache
 
