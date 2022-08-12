@@ -47,6 +47,9 @@ RUN pacman -Syu --noconfirm \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers && \
     touch /home/$DEFAULT_USER/.sudo_as_admin_successful && \
     ln -s /usr/bin/nvim /usr/bin/vi && \
+    echo "LANG=en_US.UTF-8" >/etc/locale.conf && \
+    sed 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' -i /etc/locale.gen && \
+    locale-gen && \
     rm -rf /var/cache/pacman
 
 # hadolint ignore=DL3069
