@@ -9,7 +9,6 @@ Docker containers
 ## Status
 
 - [armv7-plexmediaserver](https://cloud.docker.com/repository/docker/mitsutaka/armv7-plexmediaserver): ![](https://img.shields.io/docker/pulls/mitsutaka/armv7-plexmediaserver.svg)
-- [cloudflared](https://cloud.docker.com/repository/docker/mitsutaka/cloudflared): ![](https://img.shields.io/docker/pulls/mitsutaka/cloudflared.svg)
 - [ejabberd](https://cloud.docker.com/repository/docker/mitsutaka/ejabberd): ![](https://img.shields.io/docker/pulls/mitsutaka/ejabberd.svg)
 - [fluentd](https://cloud.docker.com/repository/docker/mitsutaka/fluentd): ![](https://img.shields.io/docker/pulls/mitsutaka/fluentd.svg)
 - [ipmi_exporter](https://cloud.docker.com/repository/docker/mitsutaka/ipmi_exporter): ![](https://img.shields.io/docker/pulls/mitsutaka/ipmi_exporter.svg)
