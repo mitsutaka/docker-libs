@@ -11,6 +11,7 @@ RUN apk add --no-cache \
     neovim
 
 RUN adduser -G wheel -s /bin/zsh -D "$DEFAULT_USER" && \
+    passwd -u "$DEFAULT_USER" && \
     mkdir -p 700 /home/$DEFAULT_USER/.ssh && \
     chown $DEFAULT_USER /home/$DEFAULT_USER/.ssh && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers && \
