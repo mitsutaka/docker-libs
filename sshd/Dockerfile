@@ -2,6 +2,7 @@ FROM alpine:3
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 ENV DEFAULT_USER mitz
 
+# hadolint ignore=DL3018
 RUN apk add --no-cache \
     openssh-server \
     make \
