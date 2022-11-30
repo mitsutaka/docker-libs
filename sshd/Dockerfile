@@ -1,68 +1,20 @@
-# hadolint ignore=DL3007
-FROM archlinux:latest
+FROM alpine:3
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
-
-ENV container docker
-
 ENV DEFAULT_USER mitz
 
-COPY mirrorlist /etc/pacman.d/mirrorlist
-
-# Install from Arch mirror
-RUN pacman -Syu --noconfirm \
-    base \
-    base-devel \
-    bash-completion \
-    bind-tools \
-    diff-so-fancy \
-    fdupes \
-    fzf \
-    git \
-    go \
-    htop \
-    imagemagick \
-    inetutils \
-    jq \
-    keychain \
-    libavif \
-    libheif \
-    neovim \
-    openssh \
-    p7zip \
-    parallel \
-    python-pip \
-    rsync \
-    sudo \
-    tmux \
-    unrar \
-    unzip \
-    which \
-    zip \
+RUN apk add --no-cache \
+    openssh-server \
+    make \
     zsh \
-    zsh-completions && \
-    useradd -m -G wheel -s /bin/zsh "$DEFAULT_USER" && \
-    mkdir -p /home/$DEFAULT_USER/.ssh && \
-    chmod 0755 /home/$DEFAULT_USER/.ssh && \
+    sudo \
+    neovim
+
+RUN adduser -G wheel -s /bin/zsh -D "$DEFAULT_USER" && \
+    mkdir -p 700 /home/$DEFAULT_USER/.ssh && \
     chown $DEFAULT_USER /home/$DEFAULT_USER/.ssh && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers && \
     touch /home/$DEFAULT_USER/.sudo_as_admin_successful && \
-    ln -s /usr/bin/nvim /usr/bin/vi && \
-    echo "LANG=en_US.UTF-8" >/etc/locale.conf && \
-    sed 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' -i /etc/locale.gen && \
-    locale-gen && \
-    rm -rf /var/cache/pacman
-
-# hadolint ignore=DL3069
-RUN su $DEFAULT_USER -c "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
-    cd /tmp/yay-bin && \
-    makepkg --rmdeps --clean --syncdeps --install --noconfirm && \
-    rm -rf /tmp/yay-bin && \
-    yay -Syu --noconfirm \
-    atool \
-    rclone-bin \
-    " && \
-    rm -rf /var/cache/pacman && \
-    rm -rf /home/$DEFAULT_USER/.cache
+    :
 
 ENV KEY_FILE=/tmp/sshd/authorized_keys
 COPY entrypoint.sh /
