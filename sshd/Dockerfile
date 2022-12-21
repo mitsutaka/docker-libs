@@ -4,11 +4,12 @@ ENV DEFAULT_USER mitz
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-    openssh-server \
     make \
-    zsh \
+    neovim \
+    openssh-server \
+    rsync \
     sudo \
-    neovim
+    zsh
 
 RUN adduser -G wheel -s /bin/zsh -D "$DEFAULT_USER" && \
     passwd -u "$DEFAULT_USER" && \

@@ -1,6 +1,6 @@
 # sshd container
 
-- Arch linux based
+- Alpine based
 - Installed daily commands.
 
 ## Usage
