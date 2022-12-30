@@ -10,6 +10,7 @@ RUN apk add --no-cache \
     curl \
     findutils \
     gawk \
+    inotify-tools \
     ipmitool \
     jq \
     openssh \
