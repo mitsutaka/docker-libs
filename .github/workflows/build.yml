@@ -166,7 +166,7 @@ jobs:
       # Every tag for the image is passed in one invocation, so a multi-arch
       # image is built once and not rebuilt per tag.
       - name: Build and push ${{ matrix.image }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.image }}
           platforms: ${{ steps.platforms.outputs.list }}
