@@ -1,0 +1,16 @@
+version: 2
+
+updates:
+  # The workflow pins actions by major tag, so this only surfaces the bumps that
+  # move a major version and would otherwise go unnoticed.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
+
+# Base images (FROM lines) are deliberately not managed here. Moving a base is a
+# release decision in this repository: it also requires bumping the image's TAG,
+# and the apk/apt version pins are tied to the base release, so those bumps are
+# made by hand.

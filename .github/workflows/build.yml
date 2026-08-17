@@ -13,35 +13,67 @@ concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
-  # Default platform list for images without a BUILDX_PLATFORMS override.
-  # linux/386 and linux/arm/v6 are unsupported by ubuntu:20.04.
-  PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/arm/v7
+# Least privilege by default; the jobs that need more ask for it.
+permissions:
+  contents: read
 
 jobs:
+  # Lint and consistency checks that do not depend on which images changed, so
+  # they run on every push and pull request. "make check" is the same entry point
+  # a developer uses locally, which keeps the hadolint version and threshold in
+  # one place instead of duplicated here.
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: make check
+        run: make check
+
   # Decide what needs building. An image is built only when the tag in its TAG
   # file is not already present in the registry, so bumping TAG is what triggers
-  # a release.
+  # a release. Pull requests additionally build whatever they touched, so a change
+  # is validated even without a TAG bump.
   prepare:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
+    env:
+      REGISTRY: ghcr.io
+      OWNER: ${{ github.repository_owner }}
     outputs:
       images: ${{ steps.matrix.outputs.images }}
       count: ${{ steps.matrix.outputs.count }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Detecting what a pull request changed needs its merge base, which the
+          # default shallow clone does not have. Quoted so the expression yields
+          # the string "0" rather than the falsy number 0.
+          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
 
       - name: Resolve images to build
         id: matrix
         env:
           GHCR_USER: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          images=$(./build_matrix.sh)
+          force=''
+          if [ "$EVENT_NAME" = pull_request ]; then
+            force=$(./changed_images.sh "$BASE_SHA")
+          fi
+
+          # build_matrix.sh explains each decision on stderr; keep it for the run
+          # summary instead of throwing it away.
+          images=$(FORCE_IMAGES="$force" ./build_matrix.sh 2>matrix.log) || {
+            cat matrix.log >&2
+            exit 1
+          }
+          cat matrix.log >&2
+
           count=$(printf '%s' "$images" | jq 'length')
 
           echo "images=$images" >> "$GITHUB_OUTPUT"
@@ -56,6 +88,15 @@ jobs:
               printf '%s' "$images" | jq -r '.[] | "- `\(.)`"'
             fi
 
+            echo
+            echo "<details><summary>How each image was decided</summary>"
+            echo
+            echo '```'
+            cat matrix.log
+            echo '```'
+            echo
+            echo "</details>"
+
             if [ -n "$(./excluded.sh)" ]; then
               echo
               echo "### Excluded by EXCLUDE"
@@ -64,7 +105,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   build:
-    needs: prepare
+    needs: [prepare, checks]
     if: needs.prepare.outputs.count != '0'
     runs-on: ubuntu-latest
     permissions:
@@ -75,33 +116,42 @@ jobs:
       fail-fast: false
       matrix:
         image: ${{ fromJSON(needs.prepare.outputs.images) }}
+    env:
+      REGISTRY: ghcr.io
+      OWNER: ${{ github.repository_owner }}
+      # Passed through the environment rather than interpolated into the shell,
+      # so a directory name can never be read as script.
+      IMAGE: ${{ matrix.image }}
+      EVENT_NAME: ${{ github.event_name }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint ${{ matrix.image }}/Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ${{ matrix.image }}/Dockerfile
-          # These Dockerfiles predate current hadolint rules and still trip a
-          # number of style warnings, so only hard errors block a publish.
-          # Tighten to "warning" once they have been cleaned up.
-          failure-threshold: error
-
       - name: Resolve build metadata
         id: meta
-        run: ./image_meta.sh "${{ matrix.image }}" >> "$GITHUB_OUTPUT"
+        env:
+          # Pull requests also build the untagged base images when they change,
+          # and nothing is pushed, so give those a tag instead of failing. Pushes
+          # leave this empty, where a missing TAG stays an error.
+          DEFAULT_TAG: ${{ github.event_name == 'pull_request' && 'latest' || '' }}
+        run: ./image_meta.sh "$IMAGE" >> "$GITHUB_OUTPUT"
 
       # Pull requests validate the build without publishing. Emulated ppc64le and
       # arm builds are slow, so PRs check the native platform only; pushes build
       # the full platform list.
       - name: Select platforms
         id: platforms
+        env:
+          IMAGE_PLATFORMS: ${{ steps.meta.outputs.platforms }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "list=linux/amd64" >> "$GITHUB_OUTPUT"
-          else
-            echo "list=${{ steps.meta.outputs.platforms }}" >> "$GITHUB_OUTPUT"
+          list="$IMAGE_PLATFORMS"
+          if [ "$EVENT_NAME" = pull_request ]; then
+            # ...unless the image cannot be built for amd64 at all, in which case
+            # its declared list is the only thing worth trying.
+            case ",${IMAGE_PLATFORMS}," in
+              *,linux/amd64,*) list=linux/amd64 ;;
+            esac
           fi
+          echo "list=$list" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
@@ -136,6 +186,15 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          PLATFORM_LIST: ${{ steps.platforms.outputs.list }}
+          STATUS: ${{ job.status }}
         run: |
-          echo "- \`${{ steps.meta.outputs.tags }}\` (${{ steps.platforms.outputs.list }})" \
+          if [ "$EVENT_NAME" = pull_request ]; then
+            action=validated
+          else
+            action=published
+          fi
+          echo "- \`${TAGS:-$IMAGE}\` (${PLATFORM_LIST:-unknown}) ${action}: ${STATUS}" \
             >> "$GITHUB_STEP_SUMMARY"
