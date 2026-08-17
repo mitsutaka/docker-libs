@@ -1,0 +1,141 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+# Only one publishing run at a time, so two pushes can't race to write the same
+# tag. In-progress PR builds are cancelled when the PR is updated.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+  # Default platform list for images without a BUILDX_PLATFORMS override.
+  # linux/386 and linux/arm/v6 are unsupported by ubuntu:20.04.
+  PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/arm/v7
+
+jobs:
+  # Decide what needs building. An image is built only when the tag in its TAG
+  # file is not already present in the registry, so bumping TAG is what triggers
+  # a release.
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    outputs:
+      images: ${{ steps.matrix.outputs.images }}
+      count: ${{ steps.matrix.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve images to build
+        id: matrix
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          images=$(./build_matrix.sh)
+          count=$(printf '%s' "$images" | jq 'length')
+
+          echo "images=$images" >> "$GITHUB_OUTPUT"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### Images to build: $count"
+            if [ "$count" -eq 0 ]; then
+              echo
+              echo "Nothing to do — every TAG is already published."
+            else
+              printf '%s' "$images" | jq -r '.[] | "- `\(.)`"'
+            fi
+
+            if [ -n "$(./excluded.sh)" ]; then
+              echo
+              echo "### Excluded by EXCLUDE"
+              ./excluded.sh | jq -Rr '"- `\(.)`"'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: prepare
+    if: needs.prepare.outputs.count != '0'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      # One bad image shouldn't stop the rest from publishing.
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.prepare.outputs.images) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint ${{ matrix.image }}/Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.image }}/Dockerfile
+          # These Dockerfiles predate current hadolint rules and still trip a
+          # number of style warnings, so only hard errors block a publish.
+          # Tighten to "warning" once they have been cleaned up.
+          failure-threshold: error
+
+      - name: Resolve build metadata
+        id: meta
+        run: ./image_meta.sh "${{ matrix.image }}" >> "$GITHUB_OUTPUT"
+
+      # Pull requests validate the build without publishing. Emulated ppc64le and
+      # arm builds are slow, so PRs check the native platform only; pushes build
+      # the full platform list.
+      - name: Select platforms
+        id: platforms
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "list=linux/amd64" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=${{ steps.meta.outputs.platforms }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Every tag for the image is passed in one invocation, so a multi-arch
+      # image is built once and not rebuilt per tag.
+      - name: Build and push ${{ matrix.image }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.image }}
+          platforms: ${{ steps.platforms.outputs.list }}
+          tags: ${{ steps.meta.outputs.tags }}
+          push: ${{ github.event_name != 'pull_request' }}
+          # image.source is what makes GHCR attach the package to this repository,
+          # which in turn gives it the repo's visibility and the
+          # /pkgs/container/<name> URL. Without it the package is orphaned.
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+          # These images are plain runtime containers; attestation manifests only
+          # add clutter to the package listing.
+          provenance: false
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "- \`${{ steps.meta.outputs.tags }}\` (${{ steps.platforms.outputs.list }})" \
+            >> "$GITHUB_STEP_SUMMARY"

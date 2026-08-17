@@ -1,11 +1,40 @@
-IMAGES = $(shell find * -name Dockerfile | grep -vE "(armv7-plexmediaserver|mediaproxy-|softether-)" | xargs -I {} dirname {})
+ALL_IMAGES := $(shell find * -name Dockerfile | xargs -I {} dirname {} | sort)
+
+# Skipped everywhere, by CI too. See the EXCLUDE file for the reasons.
+EXCLUDED := $(shell ./excluded.sh)
+
+# Skipped by local batch builds only; CI still publishes these. This exclusion
+# predates the GitHub Actions migration and its original reason was not
+# recorded, so it is preserved as-is rather than guessed at.
+LOCAL_EXCLUDED := mediaproxy-dispatcher mediaproxy-relay
+
+IMAGES := $(filter-out $(EXCLUDED) $(LOCAL_EXCLUDED),$(ALL_IMAGES))
+
 BUILDX_NAME := docker-libs
 
-# Unsupported linux/386,linux/arm/v6 for ubuntu:20.04
-BUILDX_PLATFORMS := linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7
-BUILDX_LOAD := true
+# Keep in sync with PLATFORMS in .github/workflows/build.yml.
+# linux/386 and linux/arm/v6 are unsupported by ubuntu:20.04.
+PLATFORMS := linux/amd64,linux/arm64,linux/ppc64le,linux/arm/v7
+
+# Local builds load into the docker image store, which implies a single platform.
+# Set LOAD=false to exercise the full multi-platform build the CI does.
+LOAD := true
+
 DOCKER_BUILDKIT := 1
-DOCKER_HOST :=
+BUILD_ENV := env PLATFORMS=$(PLATFORMS) LOAD=$(LOAD) DOCKER_BUILDKIT=$(DOCKER_BUILDKIT)
+
+.PHONY: lint list excluded pre build-all clean
+
+list:
+	@for name in $(IMAGES); do echo $${name}; done
+
+excluded:
+	@echo "skipped everywhere (EXCLUDE):"
+	@for name in $(EXCLUDED); do echo "  $${name}"; done
+	@echo "skipped by local batch builds only (CI still publishes these):"
+	@for name in $(LOCAL_EXCLUDED); do echo "  $${name}"; done
+	@echo
+	@echo "'make build-<name>' still builds an excluded image on request."
 
 lint:
 	@for name in $(IMAGES); do \
@@ -14,19 +43,18 @@ lint:
 	done
 
 pre:
-	-docker run --rm --name bimfmt --privileged tonistiigi/binfmt:latest --install "$(BUILDX_PLATFORMS)"
+	-docker run --rm --name binfmt --privileged tonistiigi/binfmt:latest --install "$(PLATFORMS)"
 	-docker buildx create --name $(BUILDX_NAME)
 	docker buildx use $(BUILDX_NAME)
 
 build-all: pre
 	for name in $(IMAGES); do \
 		echo building $${name}; \
-		env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) BUILDX_LOAD=$(BUILDX_LOAD) ./build.sh $${name}; \
+		$(BUILD_ENV) ./build.sh $${name}; \
 	done
 
 build-%: pre
-	env BUILDX_PLATFORMS=$(BUILDX_PLATFORMS) BUILDX_LOAD=$(BUILDX_LOAD) ./build.sh $(subst build-,,$@)
+	$(BUILD_ENV) ./build.sh $(subst build-,,$@)
 
 clean:
-	docker buildx rm $(BUILDX_NAME)
-	docker stop bimfmt
+	-docker buildx rm $(BUILDX_NAME)

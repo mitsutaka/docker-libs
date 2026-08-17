@@ -1,0 +1,16 @@
+# Images to skip, everywhere: both CI publishing and local `make build-all`.
+#
+# One image directory name per line. Blank lines and #-comments are ignored.
+# Removing a line is all it takes to bring an image back; for a published image
+# CI will pick it up again on the next run if its TAG is not in the registry.
+#
+# Read by excluded.sh, which both the Makefile and build_matrix.sh go through.
+
+# EOL base images (ubuntu:18.04 / ubuntu:14.04) with no security updates,
+# excluded pending modernization. stone does still build; ejabberd is untested
+# because it is amd64-only.
+stone
+ejabberd
+
+# Excluded by request.
+ubuntu
