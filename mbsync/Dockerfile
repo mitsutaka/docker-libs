@@ -1,7 +1,7 @@
-FROM ubuntu:20.04
+FROM ubuntu:26.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV ISYNC_VERSION 1.3.0-2
+ENV ISYNC_VERSION=1.5.1-1ubuntu2
 
 # hadolint ignore=DL3008
 RUN apt-get update \

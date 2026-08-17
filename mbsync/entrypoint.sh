@@ -1,7 +1,7 @@
 #!/bin/sh
 
 while true; do
-    mbsync $@
+    mbsync "$@"
     echo "sleeping..."
-    sleep $(expr 60 \* 5)
+    sleep 300
 done
