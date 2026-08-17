@@ -11,13 +11,14 @@ RUN apk add --no-cache \
     sudo \
     zsh
 
+# "mkdir -p 700 .ssh" used to be here, which created a directory literally named
+# /700 and left .ssh at the default 0755; -m is what sets the mode.
 RUN adduser -G wheel -s /bin/zsh -D "$DEFAULT_USER" && \
     passwd -u "$DEFAULT_USER" && \
-    mkdir -p 700 /home/$DEFAULT_USER/.ssh && \
-    chown $DEFAULT_USER /home/$DEFAULT_USER/.ssh && \
+    mkdir -m 700 "/home/$DEFAULT_USER/.ssh" && \
+    chown "$DEFAULT_USER" "/home/$DEFAULT_USER/.ssh" && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers && \
-    touch /home/$DEFAULT_USER/.sudo_as_admin_successful && \
-    :
+    touch "/home/$DEFAULT_USER/.sudo_as_admin_successful"
 
 ENV KEY_FILE=/tmp/sshd/authorized_keys
 COPY entrypoint.sh /
