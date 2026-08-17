@@ -12,16 +12,16 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 
 | Image | Tag |
 | --- | --- |
-| [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.3.1-2`, `latest` |
-| [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.3.0-2`, `latest` |
-| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `7.3.3`, `latest` |
+| [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.10.1`, `latest` |
+| [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.5.1-1ubuntu2`, `latest` |
+| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3`, `latest` |
 | [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r0`, `latest` |
-| [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.4.7`, `latest` |
+| [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.7.0`, `latest` |
 | [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.4.3-r1`, `latest` |
 | [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.4.3-r1`, `latest` |
-| [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20221221`, `alpine` |
+| [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20260817`, `alpine` |
 | [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `15`, `latest` |
-| [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.6.6`, `latest` |
+| [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.10.1`, `latest` |
 
 `debian`, `centos` and `fedora` are local development images. They have no `TAG`
 file and so are never published; build them with `make build-debian`.
