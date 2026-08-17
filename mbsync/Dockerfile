@@ -1,13 +1,12 @@
-FROM ubuntu:26.04
+FROM alpine:3.24
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV ISYNC_VERSION=1.5.1-1ubuntu2
-
-# hadolint ignore=DL3008
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends isync=${ISYNC_VERSION} ca-certificates \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Intentionally not pinned to an exact apk version. Alpine's CDN serves only the
+# newest -rN of a package for a given branch, so "isync=1.5.1-r1" stops
+# resolving the moment Alpine rebuilds the package. The base image minor is
+# pinned instead, and TAG records the version this image was released against.
+# hadolint ignore=DL3018
+RUN apk add --no-cache ca-certificates isync
 
 COPY entrypoint.sh /
 RUN chmod 755 /entrypoint.sh
