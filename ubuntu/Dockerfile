@@ -1,8 +1,8 @@
 FROM ubuntu:20.04
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV DOCKER_USER mitz
-ENV HOST_DOCKER_GROUP_ID 976
+ENV DOCKER_USER=mitz
+ENV HOST_DOCKER_GROUP_ID=976
 
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -35,5 +35,5 @@ RUN sudo apt-get update && \
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io && \
     sudo rm -rf /var/lib/apt/lists/* && \
     sudo systemctl disable docker.service && \
-    sudo usermod -a -G docker mitz && \
-    sudo groupmod -g ${HOST_DOCKER_GROUP_ID} docker
+    sudo usermod -a -G docker "$DOCKER_USER" && \
+    sudo groupmod -g "${HOST_DOCKER_GROUP_ID}" docker

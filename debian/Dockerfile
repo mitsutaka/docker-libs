@@ -1,8 +1,8 @@
 FROM debian:trixie
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-ENV DOCKER_USER mitz
-ENV HOST_DOCKER_GROUP_ID 976
+ENV DOCKER_USER=mitz
+ENV HOST_DOCKER_GROUP_ID=976
 
 # Debian 13 dropped adduser from the base image, so it is installed explicitly
 # rather than assumed.
@@ -20,9 +20,11 @@ USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
 
+# apt-transport-https is not installed: https support has been part of apt itself
+# since 1.5, so on trixie the package is only a transitional dummy.
 # hadolint ignore=DL3004
 RUN sudo apt-get update && \
-    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim apt-transport-https && \
+    sudo apt-get install -y man-db bash-completion build-essential curl openssh-client vim && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Install docker.
@@ -50,5 +52,5 @@ RUN sudo apt-get update && \
     sudo apt-get update && \
     sudo apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io && \
     sudo rm -rf /var/lib/apt/lists/* && \
-    sudo usermod -a -G docker mitz && \
+    sudo usermod -a -G docker "$DOCKER_USER" && \
     sudo groupmod -g "${HOST_DOCKER_GROUP_ID}" docker

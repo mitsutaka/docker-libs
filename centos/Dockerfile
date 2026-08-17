@@ -6,7 +6,19 @@ LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 ENV DOCKER_USER=mitz
 
-RUN dnf install -y sudo \
+# One dnf pass, as root, before dropping to the user: the tools used to be
+# installed by a second "sudo dnf install" layer after USER, which needed a
+# hadolint exception and bought nothing.
+#
+# openssh-clients, not openssh: on RHEL-family the latter ships only the shared
+# pieces, so it does not provide the ssh binary this image is meant to have.
+# hadolint ignore=DL3041
+RUN dnf install -y \
+    bash-completion \
+    man-db \
+    openssh-clients \
+    sudo \
+    vim \
     && useradd -m -G wheel "$DOCKER_USER" \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && touch /home/$DOCKER_USER/.sudo_as_admin_successful \
@@ -15,11 +27,3 @@ RUN dnf install -y sudo \
 USER "${DOCKER_USER}"
 
 WORKDIR "/home/${DOCKER_USER}"
-
-# openssh-clients, not openssh: on RHEL-family the latter ships only the shared
-# pieces, so it does not provide the ssh binary this image is meant to have.
-# hadolint ignore=DL3004,DL3041
-RUN sudo dnf install -y man-db bash-completion openssh-clients vim && \
-    sudo dnf clean all
-
-
