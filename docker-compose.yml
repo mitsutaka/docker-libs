@@ -1,13 +1,13 @@
-version: "3"
+# Convenience wrapper for the local-only development images, equivalent to
+# "make build-debian" and friends. The top-level "version" key was removed: it is
+# obsolete in Compose v2, which warns about it.
+#
+# ubuntu is not listed because it is in EXCLUDE.
 services:
   debian:
     build:
       context: debian
     image: devel:debian
-  ubuntu:
-    build:
-      context: ubuntu
-    image: devel:ubuntu
   centos:
     build:
       context: centos

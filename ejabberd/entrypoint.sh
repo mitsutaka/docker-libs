@@ -5,7 +5,6 @@ set -x
 
 echo "EJABBERD_BYPASS_WARNINGS=true" >> /etc/ejabberd/ejabberdctl.cfg
 
-HOSTIP="127.0.0.1"
 DOMAIN=${DOMAIN:-"tutorica.jp"}
 NODENAME=master
 
