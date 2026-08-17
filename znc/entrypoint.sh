@@ -9,11 +9,11 @@ if [ -d "${DATADIR}/modules" ]; then
 
     for module in $modules; do
         echo "Building module $module..."
-        cd "$(dirname "$module")"
+        cd "$(dirname "$module")" || exit 1
         znc-buildmod "$module"
     done
 
-    cd "$cwd"
+    cd "$cwd" || exit 1
 fi
 
 if [ ! -f "${DATADIR}/configs/znc.conf" ]; then
@@ -22,4 +22,4 @@ if [ ! -f "${DATADIR}/configs/znc.conf" ]; then
     cp /znc.conf.default "${DATADIR}/configs/znc.conf"
 fi
 
-exec znc --foreground --datadir="$DATADIR" $@
+exec znc --foreground --datadir="$DATADIR" "$@"
