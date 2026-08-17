@@ -6,7 +6,7 @@
 # walks a volume set from its first part and fails loudly on a missing one.
 #
 # Linked statically so the runtime stage needs no libstdc++.
-FROM alpine:3 AS unrar
+FROM alpine:3.24 AS unrar
 
 ENV UNRAR_VERSION=7.2.4
 ENV UNRAR_SHA256=b02e571a33af7711cd803080500370dc1d28eea82b2032480819d27462ad8b31
@@ -25,7 +25,7 @@ RUN apk add --no-cache build-base \
     LDFLAGS="-pthread -static" \
     && install -Dm755 /tmp/unrar/unrar /out/unrar
 
-FROM alpine:3
+FROM alpine:3.24
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 # hadolint ignore=DL3018
