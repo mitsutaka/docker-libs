@@ -1,14 +1,9 @@
 ALL_IMAGES := $(shell find * -name Dockerfile | xargs -I {} dirname {} | sort)
 
-# Skipped everywhere, by CI too. See the EXCLUDE file for the reasons.
+# Skipped by CI and by build-all alike. See the EXCLUDE file for the reasons.
 EXCLUDED := $(shell ./excluded.sh)
 
-# Skipped by local batch builds only; CI still publishes these. This exclusion
-# predates the GitHub Actions migration and its original reason was not
-# recorded, so it is preserved as-is rather than guessed at.
-LOCAL_EXCLUDED := mediaproxy-dispatcher mediaproxy-relay
-
-IMAGES := $(filter-out $(EXCLUDED) $(LOCAL_EXCLUDED),$(ALL_IMAGES))
+IMAGES := $(filter-out $(EXCLUDED),$(ALL_IMAGES))
 
 BUILDX_NAME := docker-libs
 
@@ -29,10 +24,8 @@ list:
 	@for name in $(IMAGES); do echo $${name}; done
 
 excluded:
-	@echo "skipped everywhere (EXCLUDE):"
+	@echo "skipped by CI and build-all (EXCLUDE):"
 	@for name in $(EXCLUDED); do echo "  $${name}"; done
-	@echo "skipped by local batch builds only (CI still publishes these):"
-	@for name in $(LOCAL_EXCLUDED); do echo "  $${name}"; done
 	@echo
 	@echo "'make build-<name>' still builds an excluded image on request."
 

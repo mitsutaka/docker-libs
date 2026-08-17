@@ -12,12 +12,9 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 
 | Image | Tag |
 | --- | --- |
-| [devel](https://github.com/mitsutaka/docker-libs/pkgs/container/devel) | `20210414`, `arch` |
 | [fluentd](https://github.com/mitsutaka/docker-libs/pkgs/container/fluentd) | `1.3.2`, `latest` |
 | [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.3.1-2`, `latest` |
 | [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.3.0-2`, `latest` |
-| [mediaproxy-dispatcher](https://github.com/mitsutaka/docker-libs/pkgs/container/mediaproxy-dispatcher) | `2.6.6`, `latest` |
-| [mediaproxy-relay](https://github.com/mitsutaka/docker-libs/pkgs/container/mediaproxy-relay) | `2.6.6`, `latest` |
 | [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `7.3.3`, `latest` |
 | [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r0`, `latest` |
 | [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.4.7`, `latest` |
@@ -43,11 +40,6 @@ make build-stone       # build an excluded image anyway, on request
 
 Deleting a line from `EXCLUDE` re-enables the image. `excluded.sh` is the only
 reader of the file, so CI and the Makefile cannot disagree about what is skipped.
-
-Separately, `mediaproxy-dispatcher` and `mediaproxy-relay` are skipped by
-`make build-all` but **are** still published by CI. That split predates the
-GitHub Actions migration and its original reason was not recorded, so it has been
-preserved rather than guessed at.
 
 ## How an image is defined
 
