@@ -15,10 +15,15 @@ COPY znc.conf.default /znc.conf.default
 # Drop the packaged account and recreate it at the uid this image expects, so
 # existing data directories stay writable. /var/lib/znc is left orphaned on
 # purpose; the entrypoint runs znc with --datadir=/znc-data and never uses it.
-RUN deluser znc && delgroup znc 2>/dev/null; \
-    addgroup -g 10000 znc && adduser -u 10000 -G znc -D -H znc
-RUN chmod 644 /znc.conf.default && chown 10000:10000 /znc.conf.default
-RUN mkdir -p /znc-data && chown 10000:10000 /znc-data
+#
+# deluser and delgroup are attempted independently: the account may not exist at
+# all, and either way the addgroup/adduser that follow must succeed.
+RUN deluser znc 2>/dev/null; delgroup znc 2>/dev/null; \
+    addgroup -g 10000 znc && \
+    adduser -u 10000 -G znc -D -H znc && \
+    chmod 644 /znc.conf.default && \
+    chown 10000:10000 /znc.conf.default && \
+    install -d -o 10000 -g 10000 /znc-data
 
 USER 10000:10000
 VOLUME /znc-data
