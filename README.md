@@ -20,7 +20,7 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 | [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.4.3-r1`, `latest` |
 | [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.4.3-r1`, `latest` |
 | [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20221221`, `alpine` |
-| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `14`, `latest` |
+| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `15`, `latest` |
 | [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.6.6`, `latest` |
 
 `debian`, `centos` and `fedora` are local development images. They have no `TAG`
