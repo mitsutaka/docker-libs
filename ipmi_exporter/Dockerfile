@@ -6,7 +6,10 @@
 #
 # The build stage is pinned to the BUILD platform and cross-compiles to the
 # target, so building a foreign-architecture image does not run the Go compiler
-# under emulation.
+# under emulation. That is also why this image has no BUILDX_PLATFORMS override
+# and simply follows the repository's default platform list: only the small
+# alpine runtime stage is built per architecture, so the extra platforms cost
+# almost nothing.
 FROM --platform=$BUILDPLATFORM golang:1.26 AS build
 
 ARG IPMI_EXPORTER_VERSION=v1.10.1
