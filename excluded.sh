@@ -13,7 +13,9 @@
 set -eu
 
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
-exclude_file="${EXCLUDE_FILE:-${script_dir}/EXCLUDE}"
+cd "$script_dir"
+
+exclude_file="${EXCLUDE_FILE:-EXCLUDE}"
 
 [ -f "$exclude_file" ] || exit 0
 

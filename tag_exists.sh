@@ -17,8 +17,20 @@
 #   GHCR_TOKEN  token/password; on GitHub Actions pass secrets.GITHUB_TOKEN
 set -eu
 
+# TAG is read from the repository, not from the caller's directory.
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+cd "$script_dir"
+
 REGISTRY="${REGISTRY:-ghcr.io}"
 OWNER="${OWNER:-mitsutaka}"
+
+# A registry hiccup should not be reported as "absent", which would rebuild and
+# overwrite a published tag, nor abort the whole matrix on the first blip. --retry
+# covers connection errors and 5xx only, so the 401/403/404 handling below still
+# sees those statuses.
+http() {
+    curl -sS --retry 3 --retry-connrefused --max-time 30 "$@"
+}
 
 if [ $# -ne 1 ]; then
     echo "Usage: $0 NAME" >&2
@@ -48,13 +60,13 @@ body=$(mktemp)
 trap "rm -f '$body'" EXIT
 
 if [ -n "${GHCR_TOKEN:-}" ]; then
-    token_code=$(curl -sS -u "${GHCR_USER:-}:${GHCR_TOKEN}" \
+    token_code=$(http -u "${GHCR_USER:-}:${GHCR_TOKEN}" \
         -o "$body" -w '%{http_code}' "$token_url") || {
         echo "$0: token request failed for ${repo}" >&2
         exit 2
     }
 else
-    token_code=$(curl -sS -o "$body" -w '%{http_code}' "$token_url") || {
+    token_code=$(http -o "$body" -w '%{http_code}' "$token_url") || {
         echo "$0: anonymous token request failed for ${repo}" >&2
         exit 2
     }
@@ -86,9 +98,10 @@ if [ -z "$token" ]; then
     exit 2
 fi
 
-# Ask for every manifest media type we might have pushed; multi-arch builds
-# produce an index/manifest-list, single-arch a plain manifest.
-code=$(curl -sS -o /dev/null -w '%{http_code}' \
+# HEAD, because only the status code matters; and ask for every manifest media
+# type we might have pushed, since multi-arch builds produce an index/manifest
+# list and single-arch a plain manifest.
+code=$(http --head -o /dev/null -w '%{http_code}' \
     -H "Authorization: Bearer ${token}" \
     -H 'Accept: application/vnd.oci.image.index.v1+json' \
     -H 'Accept: application/vnd.oci.image.manifest.v1+json' \

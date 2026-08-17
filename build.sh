@@ -16,7 +16,8 @@
 #              host platform only.
 #   REGISTRY   default ghcr.io
 #   OWNER      default mitsutaka
-#   PLATFORMS  default platform list for images without a BUILDX_PLATFORMS file
+#   PLATFORMS  default platform list for images without a BUILDX_PLATFORMS file.
+#              defaults to the repository's PLATFORMS file.
 set -eu
 
 if [ $# -ne 1 ]; then
@@ -24,7 +25,11 @@ if [ $# -ne 1 ]; then
     exit 2
 fi
 
+# Build from the repository, so the build context and the metadata files resolve
+# the same way no matter where this is invoked from.
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+cd "$script_dir"
+
 name="${1%/}"
 
 PUSH="${PUSH:-false}"
@@ -32,7 +37,7 @@ LOAD="${LOAD:-true}"
 
 # Untagged base images (debian, ubuntu, centos, fedora) are local-only, so give
 # them a tag rather than failing.
-meta=$(DEFAULT_TAG=latest "${script_dir}/image_meta.sh" "$name")
+meta=$(DEFAULT_TAG=latest ./image_meta.sh "$name")
 
 meta_get() {
     printf '%s\n' "$meta" | sed -n "s/^$1=//p"
@@ -61,8 +66,10 @@ elif [ "$LOAD" = true ]; then
     # with a confusing "404 Not Found" or "exec format error" deeper in.
     host=$(docker version --format '{{.Server.Os}}/{{.Server.Arch}}' 2>/dev/null || true)
     if [ -n "$host" ]; then
+        # docker reports arm/v7 hosts as plain "linux/arm", so match a bare
+        # "linux/arm" against "linux/arm/v7" too rather than warning wrongly.
         case ",${platforms}," in
-            *",${host},"*) ;;
+            *",${host},"* | *",${host}/v"*) ;;
             *)
                 echo "$0: warning: ${name} declares platforms '${platforms}'," >&2
                 echo "$0: warning: which does not include this host (${host})." >&2
