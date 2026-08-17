@@ -12,7 +12,6 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 
 | Image | Tag |
 | --- | --- |
-| [fluentd](https://github.com/mitsutaka/docker-libs/pkgs/container/fluentd) | `1.3.2`, `latest` |
 | [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.3.1-2`, `latest` |
 | [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.3.0-2`, `latest` |
 | [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `7.3.3`, `latest` |
