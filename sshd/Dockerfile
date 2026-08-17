@@ -1,6 +1,6 @@
-FROM alpine:3
+FROM alpine:3.24
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
-ENV DEFAULT_USER mitz
+ENV DEFAULT_USER=mitz
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
