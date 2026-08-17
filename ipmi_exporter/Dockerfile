@@ -27,14 +27,18 @@ RUN version="${IPMI_EXPORTER_VERSION#v}" \
     -ldflags="-s -w -X github.com/prometheus/common/version.Version=${version}" \
     -o /out/ipmi_exporter .
 
-FROM ubuntu:26.04
+# The binary is built with CGO disabled, so it is static and runs on musl
+# unchanged. Alpine is used only to supply freeipmi, which the tools-based
+# collectors shell out to.
+FROM alpine:3.24
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
-# The tools-based collectors shell out to freeipmi.
-# hadolint ignore=DL3008
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends freeipmi \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Intentionally not pinned to an exact apk version. Alpine's CDN serves only the
+# newest -rN of a package for a given branch, so "freeipmi=1.6.17-r0" stops
+# resolving the moment Alpine rebuilds the package. The base image minor is
+# pinned instead.
+# hadolint ignore=DL3018
+RUN apk add --no-cache freeipmi
 
 COPY --from=build /out/ipmi_exporter /usr/local/bin/ipmi_exporter
 COPY --from=build /src/LICENSE /usr/local/share/ipmi_exporter/LICENSE
