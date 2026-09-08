@@ -15,6 +15,8 @@
 #   OWNER       default mitsutaka
 #   GHCR_USER   username for the registry token request
 #   GHCR_TOKEN  token/password; on GitHub Actions pass secrets.GITHUB_TOKEN
+#
+# An optional second argument checks that tag instead of the image's TAG file.
 set -eu
 
 # TAG is read from the repository, not from the caller's directory.
@@ -32,18 +34,22 @@ http() {
     curl -sS --retry 3 --retry-connrefused --max-time 30 "$@"
 }
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 NAME" >&2
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Usage: $0 NAME [TAG]" >&2
     exit 2
 fi
 
 name="${1%/}"
 
-if [ ! -f "$name/TAG" ]; then
-    echo "$0: $name/TAG not found" >&2
-    exit 2
+if [ "$#" -eq 2 ]; then
+    tag=$2
+else
+    if [ ! -f "$name/TAG" ]; then
+        echo "$0: $name/TAG not found" >&2
+        exit 2
+    fi
+    tag=$(cat "$name/TAG")
 fi
-tag=$(cat "$name/TAG")
 if [ -z "$tag" ]; then
     echo "$0: $name/TAG is empty" >&2
     exit 2

@@ -67,6 +67,14 @@ present in the registry. **Bumping `TAG` is what triggers a release** — merge
 that change to `master` and the workflow builds and pushes it. Nothing else
 needs to be touched, and re-running the workflow on an unchanged tree is a no-op.
 
+The scheduled refresh checks packages installed in each published image against
+the repositories for its pinned base image. When upgrades are available, it
+commits unused release tags, regenerates this table, and dispatches the build
+workflow. Package-focused images use the new package version as their tag;
+aggregate and custom-built images receive a new image revision. This does not
+track custom software fetched outside the OS package manager, such as
+`ipmi_exporter`, `offlineimap3`, or `unrar`; update those versions manually.
+
 A rebuild of the same upstream version gets a `-N` revision suffix, for example
 `v1.10.1` → `v1.10.1-1` → `v1.10.1-2`.
 
@@ -81,6 +89,8 @@ request.
 make list              # images make will build
 make excluded          # images that are skipped, and why the list is split
 make check             # everything CI checks: lint, shellcheck, readme-check
+make updates-check     # report published images with upgradable OS packages
+make updates-update    # assign unused release tags to those images
 make lint              # hadolint every Dockerfile
 make shellcheck        # shellcheck every script and entrypoint
 make readme            # regenerate the image table in this file
@@ -113,6 +123,7 @@ location rather than trusting `$PWD`.
 | --- | --- |
 | `image_meta.sh NAME` | resolve tags and platforms for one image |
 | `tag_exists.sh NAME` | is this image's `TAG` already published? `0` yes, `1` no, `2` error |
+| `update_tags.sh` | check published images for OS package updates and assign new tags |
 | `excluded.sh` | the excluded image names, parsed from `EXCLUDE` |
 | `changed_images.sh BASE [HEAD]` | image directories touched since `BASE`, for PR validation |
 | `build_matrix.sh` | JSON array of images needing a build, for the CI matrix |

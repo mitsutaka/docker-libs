@@ -2,7 +2,7 @@ FROM alpine:3.24
 LABEL maintainer="Mitz Amano <mitz@linux.com>"
 
 # Intentionally not pinned to exact apk versions. Alpine's CDN serves only the
-# newest -rN of a package for a branch, so "openssh=10.3_p1-r0" stops
+# newest -rN of a package for a branch, so an exact openssh pin stops
 # resolving the moment Alpine rebuilds the package. The base image minor is
 # pinned instead, and TAG records the version this image was released against.
 #

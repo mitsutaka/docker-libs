@@ -43,7 +43,7 @@ AWK_SPLICE = awk -v begin='$(README_BEGIN)' -v end='$(README_END)' -v table='$(T
 	 $$0 == end { skip = 0 } \
 	 !skip { print }'
 
-.PHONY: list excluded check lint shellcheck actionlint readme readme-check pre build-all clean
+.PHONY: list excluded check test updates-check updates-update lint shellcheck actionlint readme readme-check pre build-all clean
 
 list:
 	@for name in $(IMAGES); do echo $${name}; done
@@ -56,7 +56,17 @@ excluded:
 
 # Everything CI checks on every run, so a full pass can be reproduced locally
 # with one command.
-check: lint shellcheck actionlint readme-check
+check: test lint shellcheck actionlint readme-check
+
+test:
+	@./test_update_tags.sh
+
+updates-check:
+	@./update_tags.sh
+
+updates-update:
+	@./update_tags.sh --write
+	@$(MAKE) --no-print-directory readme
 
 lint:
 	@rc=0; \
