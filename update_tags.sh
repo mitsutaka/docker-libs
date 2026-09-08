@@ -152,10 +152,10 @@ check_alpine() {
         ' sh "$primary")
         installed=$(printf '%s\n' "$versions" | sed -n '1p')
         candidate=$(printf '%s\n' "$versions" | sed -n '2p')
-        [ -n "$installed" ] && [ -n "$candidate" ] || {
+        if [ -z "$installed" ] || [ -z "$candidate" ]; then
             echo "$0: could not resolve $primary versions in $ref" >&2
             exit 2
-        }
+        fi
     fi
 }
 
