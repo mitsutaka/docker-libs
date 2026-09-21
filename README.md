@@ -15,7 +15,7 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 | --- | --- |
 | [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.10.1-15`, `latest` |
 | [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.5.1-r1-13`, `latest` |
-| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-14`, `latest` |
+| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-15`, `latest` |
 | [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r1-11`, `latest` |
 | [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.7.7-r0-7`, `latest` |
 | [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.5.0-r0-11`, `latest` |
