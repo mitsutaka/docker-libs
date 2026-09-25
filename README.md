@@ -15,13 +15,13 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 | --- | --- |
 | [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.10.1-15`, `latest` |
 | [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.5.1-r1-13`, `latest` |
-| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-18`, `latest` |
+| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-19`, `latest` |
 | [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r1-11`, `latest` |
 | [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.7.7-r0-7`, `latest` |
 | [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.5.0-r0-11`, `latest` |
 | [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.5.0-r0-11`, `latest` |
 | [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20260918`, `alpine` |
-| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `27`, `latest` |
+| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `28`, `latest` |
 | [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.10.2-r0-13`, `latest` |
 <!-- END GENERATED IMAGE TABLE -->
 
