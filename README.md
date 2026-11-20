@@ -21,7 +21,7 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 | [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.5.0-r0-14`, `latest` |
 | [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.5.0-r0-14`, `latest` |
 | [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20261002`, `alpine` |
-| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `35`, `latest` |
+| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `36`, `latest` |
 | [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.10.2-r0-16`, `latest` |
 <!-- END GENERATED IMAGE TABLE -->
 
