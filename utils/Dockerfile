@@ -42,6 +42,7 @@ RUN apk add --no-cache \
     jq \
     openssh \
     parallel \
+    python3 \
     rclone \
     restic \
     rsync
