@@ -13,16 +13,16 @@ docker pull ghcr.io/mitsutaka/<name>:<tag>
 <!-- BEGIN GENERATED IMAGE TABLE -->
 | Image | Tag |
 | --- | --- |
-| [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.10.1-22`, `latest` |
-| [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.5.1-r1-20`, `latest` |
-| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-30`, `latest` |
-| [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r2-3`, `latest` |
-| [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.7.7-r0-14`, `latest` |
-| [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.5.2-r1-3`, `latest` |
-| [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.5.2-r1-3`, `latest` |
-| [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20261123`, `alpine` |
-| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `40`, `latest` |
-| [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.10.3-r0-3`, `latest` |
+| [ipmi_exporter](https://github.com/mitsutaka/docker-libs/pkgs/container/ipmi_exporter) | `v1.10.1-23`, `latest` |
+| [mbsync](https://github.com/mitsutaka/docker-libs/pkgs/container/mbsync) | `1.5.1-r1-21`, `latest` |
+| [offlineimap](https://github.com/mitsutaka/docker-libs/pkgs/container/offlineimap) | `8.0.3-31`, `latest` |
+| [openssh](https://github.com/mitsutaka/docker-libs/pkgs/container/openssh) | `10.3_p1-r2-4`, `latest` |
+| [openvpn-client](https://github.com/mitsutaka/docker-libs/pkgs/container/openvpn-client) | `2.7.9-r0`, `latest` |
+| [rsync](https://github.com/mitsutaka/docker-libs/pkgs/container/rsync) | `3.5.2-r1-4`, `latest` |
+| [rsyncd](https://github.com/mitsutaka/docker-libs/pkgs/container/rsyncd) | `3.5.2-r1-4`, `latest` |
+| [sshd](https://github.com/mitsutaka/docker-libs/pkgs/container/sshd) | `20261124`, `alpine` |
+| [utils](https://github.com/mitsutaka/docker-libs/pkgs/container/utils) | `41`, `latest` |
+| [znc](https://github.com/mitsutaka/docker-libs/pkgs/container/znc) | `1.10.3-r0-4`, `latest` |
 <!-- END GENERATED IMAGE TABLE -->
 
 The table above is generated from the `TAG` and `BRANCH` files by
